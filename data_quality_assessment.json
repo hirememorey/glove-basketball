@@ -1,0 +1,50 @@
+{
+  "games_assessed": 3,
+  "data_completeness": {
+    "average_score": 100.0,
+    "score_distribution": {
+      "excellent": 3,
+      "good": 0,
+      "fair": 0,
+      "poor": 0
+    },
+    "component_breakdown": {
+      "data_availability": {
+        "average": 100.0,
+        "min": 100.0,
+        "max": 100.0
+      },
+      "data_quality": {
+        "average": 100.0,
+        "min": 100,
+        "max": 100
+      },
+      "consistency": {
+        "average": 100.0,
+        "min": 100,
+        "max": 100
+      }
+    }
+  },
+  "consistency_checks": {
+    "time_alignment_distribution": {
+      "good": 3
+    },
+    "data_completeness_distribution": {
+      "complete": 3
+    }
+  },
+  "error_patterns": {
+    "total_issues": 0,
+    "unique_issue_types": 0,
+    "most_common_issues": [],
+    "issue_distribution": {}
+  },
+  "quality_score": {
+    "overall_score": 100.0,
+    "quality_level": "excellent",
+    "score_range": "100.0 - 100.0",
+    "standard_deviation": 0.0
+  },
+  "recommendations": []
+}

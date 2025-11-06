@@ -1,0 +1,387 @@
+{
+  "game_id": "0022200001",
+  "teams": [
+    {
+      "team_name": "Philadelphia 76ers",
+      "players": [
+        {
+          "player_id": 200782,
+          "player_name": "P.J. Tucker",
+          "in_time": 0.0,
+          "out_time": 5010.0
+        },
+        {
+          "player_id": 200782,
+          "player_name": "P.J. Tucker",
+          "in_time": 8670.0,
+          "out_time": 19520.0
+        },
+        {
+          "player_id": 200782,
+          "player_name": "P.J. Tucker",
+          "in_time": 24850.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 201935,
+          "player_name": "James Harden",
+          "in_time": 0.0,
+          "out_time": 7200.0
+        },
+        {
+          "player_id": 201935,
+          "player_name": "James Harden",
+          "in_time": 10080.0,
+          "out_time": 21293.0
+        },
+        {
+          "player_id": 201935,
+          "player_name": "James Harden",
+          "in_time": 24850.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 202699,
+          "player_name": "Tobias Harris",
+          "in_time": 0.0,
+          "out_time": 5490.0
+        },
+        {
+          "player_id": 202699,
+          "player_name": "Tobias Harris",
+          "in_time": 9400.0,
+          "out_time": 20500.0
+        },
+        {
+          "player_id": 202699,
+          "player_name": "Tobias Harris",
+          "in_time": 24850.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 203954,
+          "player_name": "Joel Embiid",
+          "in_time": 0.0,
+          "out_time": 4100.0
+        },
+        {
+          "player_id": 203954,
+          "player_name": "Joel Embiid",
+          "in_time": 7200.0,
+          "out_time": 13140.0
+        },
+        {
+          "player_id": 203954,
+          "player_name": "Joel Embiid",
+          "in_time": 14400.0,
+          "out_time": 19520.0
+        },
+        {
+          "player_id": 203954,
+          "player_name": "Joel Embiid",
+          "in_time": 21600.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 1626149,
+          "player_name": "Montrezl Harrell",
+          "in_time": 4100.0,
+          "out_time": 7200.0
+        },
+        {
+          "player_id": 1626149,
+          "player_name": "Montrezl Harrell",
+          "in_time": 13140.0,
+          "out_time": 14400.0
+        },
+        {
+          "player_id": 1626149,
+          "player_name": "Montrezl Harrell",
+          "in_time": 19520.0,
+          "out_time": 21600.0
+        },
+        {
+          "player_id": 1627777,
+          "player_name": "Georges Niang",
+          "in_time": 5490.0,
+          "out_time": 6985.0
+        },
+        {
+          "player_id": 1627777,
+          "player_name": "Georges Niang",
+          "in_time": 7200.0,
+          "out_time": 8670.0
+        },
+        {
+          "player_id": 1627777,
+          "player_name": "Georges Niang",
+          "in_time": 20500.0,
+          "out_time": 21561.0
+        },
+        {
+          "player_id": 1627777,
+          "player_name": "Georges Niang",
+          "in_time": 21600.0,
+          "out_time": 24850.0
+        },
+        {
+          "player_id": 1627863,
+          "player_name": "Danuel House Jr.",
+          "in_time": 5010.0,
+          "out_time": 9400.0
+        },
+        {
+          "player_id": 1627863,
+          "player_name": "Danuel House Jr.",
+          "in_time": 19520.0,
+          "out_time": 24850.0
+        },
+        {
+          "player_id": 1629001,
+          "player_name": "De'Anthony Melton",
+          "in_time": 5010.0,
+          "out_time": 10080.0
+        },
+        {
+          "player_id": 1629001,
+          "player_name": "De'Anthony Melton",
+          "in_time": 17590.0,
+          "out_time": 24850.0
+        },
+        {
+          "player_id": 1629680,
+          "player_name": "Matisse Thybulle",
+          "in_time": 6985.0,
+          "out_time": 7188.0
+        },
+        {
+          "player_id": 1629680,
+          "player_name": "Matisse Thybulle",
+          "in_time": 21561.0,
+          "out_time": 21600.0
+        },
+        {
+          "player_id": 1630178,
+          "player_name": "Tyrese Maxey",
+          "in_time": 0.0,
+          "out_time": 5010.0
+        },
+        {
+          "player_id": 1630178,
+          "player_name": "Tyrese Maxey",
+          "in_time": 7188.0,
+          "out_time": 17590.0
+        },
+        {
+          "player_id": 1630178,
+          "player_name": "Tyrese Maxey",
+          "in_time": 21293.0,
+          "out_time": 28800.0
+        }
+      ]
+    },
+    {
+      "team_name": "Boston Celtics",
+      "players": [
+        {
+          "player_id": 201143,
+          "player_name": "Al Horford",
+          "in_time": 0.0,
+          "out_time": 2160.0
+        },
+        {
+          "player_id": 201143,
+          "player_name": "Al Horford",
+          "in_time": 7200.0,
+          "out_time": 12280.0
+        },
+        {
+          "player_id": 201143,
+          "player_name": "Al Horford",
+          "in_time": 14400.0,
+          "out_time": 18050.0
+        },
+        {
+          "player_id": 201143,
+          "player_name": "Al Horford",
+          "in_time": 25830.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 201933,
+          "player_name": "Blake Griffin",
+          "in_time": 5010.0,
+          "out_time": 7188.0
+        },
+        {
+          "player_id": 201933,
+          "player_name": "Blake Griffin",
+          "in_time": 13140.0,
+          "out_time": 14316.0
+        },
+        {
+          "player_id": 201933,
+          "player_name": "Blake Griffin",
+          "in_time": 21293.0,
+          "out_time": 22910.0
+        },
+        {
+          "player_id": 203935,
+          "player_name": "Marcus Smart",
+          "in_time": 0.0,
+          "out_time": 5490.0
+        },
+        {
+          "player_id": 203935,
+          "player_name": "Marcus Smart",
+          "in_time": 7188.0,
+          "out_time": 7200.0
+        },
+        {
+          "player_id": 203935,
+          "player_name": "Marcus Smart",
+          "in_time": 9400.0,
+          "out_time": 21600.0
+        },
+        {
+          "player_id": 203935,
+          "player_name": "Marcus Smart",
+          "in_time": 24850.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 203943,
+          "player_name": "Noah Vonleh",
+          "in_time": 2160.0,
+          "out_time": 5010.0
+        },
+        {
+          "player_id": 203943,
+          "player_name": "Noah Vonleh",
+          "in_time": 8280.0,
+          "out_time": 13140.0
+        },
+        {
+          "player_id": 203943,
+          "player_name": "Noah Vonleh",
+          "in_time": 18050.0,
+          "out_time": 19520.0
+        },
+        {
+          "player_id": 203943,
+          "player_name": "Noah Vonleh",
+          "in_time": 22910.0,
+          "out_time": 25830.0
+        },
+        {
+          "player_id": 1627759,
+          "player_name": "Jaylen Brown",
+          "in_time": 0.0,
+          "out_time": 5490.0
+        },
+        {
+          "player_id": 1627759,
+          "player_name": "Jaylen Brown",
+          "in_time": 8670.0,
+          "out_time": 20430.0
+        },
+        {
+          "player_id": 1627759,
+          "player_name": "Jaylen Brown",
+          "in_time": 22910.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 1627763,
+          "player_name": "Malcolm Brogdon",
+          "in_time": 4100.0,
+          "out_time": 9400.0
+        },
+        {
+          "player_id": 1627763,
+          "player_name": "Malcolm Brogdon",
+          "in_time": 12280.0,
+          "out_time": 14400.0
+        },
+        {
+          "player_id": 1627763,
+          "player_name": "Malcolm Brogdon",
+          "in_time": 17950.0,
+          "out_time": 24850.0
+        },
+        {
+          "player_id": 1628369,
+          "player_name": "Jayson Tatum",
+          "in_time": 0.0,
+          "out_time": 4100.0
+        },
+        {
+          "player_id": 1628369,
+          "player_name": "Jayson Tatum",
+          "in_time": 5490.0,
+          "out_time": 9400.0
+        },
+        {
+          "player_id": 1628369,
+          "player_name": "Jayson Tatum",
+          "in_time": 10080.0,
+          "out_time": 21293.0
+        },
+        {
+          "player_id": 1628369,
+          "player_name": "Jayson Tatum",
+          "in_time": 24850.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 1628401,
+          "player_name": "Derrick White",
+          "in_time": 0.0,
+          "out_time": 3190.0
+        },
+        {
+          "player_id": 1628401,
+          "player_name": "Derrick White",
+          "in_time": 5490.0,
+          "out_time": 8670.0
+        },
+        {
+          "player_id": 1628401,
+          "player_name": "Derrick White",
+          "in_time": 14316.0,
+          "out_time": 17950.0
+        },
+        {
+          "player_id": 1628401,
+          "player_name": "Derrick White",
+          "in_time": 20430.0,
+          "out_time": 24850.0
+        },
+        {
+          "player_id": 1629684,
+          "player_name": "Grant Williams",
+          "in_time": 3190.0,
+          "out_time": 8280.0
+        },
+        {
+          "player_id": 1629684,
+          "player_name": "Grant Williams",
+          "in_time": 19520.0,
+          "out_time": 28800.0
+        },
+        {
+          "player_id": 1630573,
+          "player_name": "Sam Hauser",
+          "in_time": 9400.0,
+          "out_time": 10080.0
+        },
+        {
+          "player_id": 1630573,
+          "player_name": "Sam Hauser",
+          "in_time": 21600.0,
+          "out_time": 22910.0
+        }
+      ]
+    }
+  ]
+}

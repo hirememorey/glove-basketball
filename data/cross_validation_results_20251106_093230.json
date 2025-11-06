@@ -1,0 +1,81 @@
+{
+  "temporal_stability": {
+    "early_season_games": [
+      1910
+    ],
+    "mid_season_games": [
+      1902
+    ],
+    "late_season_games": [
+      1957
+    ],
+    "stability_metrics": {
+      "coefficient_correlations": {
+        "mean_correlation": -0.07286926789099812,
+        "std_correlation": 0.13406559070887572,
+        "min_correlation": -0.2290765126922557,
+        "max_correlation": 0.0982926503347728,
+        "n_comparisons": 3
+      },
+      "r2_stability": 0.07119641701707786,
+      "overall_stability_score": 0.6703504375814247,
+      "model_comparisons": {
+        "early_vs_mid": {
+          "correlation": -0.2290765126922557,
+          "mse_difference": 3.6678516567143936e-05,
+          "common_players": 377,
+          "correlation_interpretation": "Weak correlation"
+        },
+        "early_vs_late": {
+          "correlation": -0.08782394131551148,
+          "mse_difference": 3.2140542767503936e-05,
+          "common_players": 371,
+          "correlation_interpretation": "Very weak or no correlation"
+        },
+        "mid_vs_late": {
+          "correlation": 0.0982926503347728,
+          "mse_difference": 2.4443799784421565e-05,
+          "common_players": 367,
+          "correlation_interpretation": "Very weak or no correlation"
+        }
+      },
+      "stability_interpretation": "unstable"
+    },
+    "subset_sizes": {
+      "early": 1910,
+      "mid": 1902,
+      "late": 1957
+    },
+    "selection_bias_warning": {
+      "processed_date_range": "2022-10-18 00:00:00 to 2022-11-21 00:00:00",
+      "total_season_range": "2022-10-18 00:00:00 to 2023-04-09 00:00:00",
+      "bias_description": "All processed games are from early season only",
+      "risk_level": "CRITICAL"
+    }
+  },
+  "team_conference_stability": {
+    "eastern_conference_games": 0,
+    "western_conference_games": 0,
+    "stability_metrics": {},
+    "note": "Requires team conference mapping implementation"
+  },
+  "venue_effects": {
+    "home_stints": 2884,
+    "away_stints": 2884,
+    "venue_stability_metrics": {},
+    "home_advantage_effects": {}
+  },
+  "competitive_balance": {
+    "close_game_stints": 3639,
+    "blowout_game_stints": 2130,
+    "close_game_rapm": {
+      "model_name": "close_games",
+      "sample_size": 3639,
+      "games_covered": 114,
+      "r2_score": 0.0444731535730849,
+      "cv_mean_r2": -0.01612953873813523,
+      "best_alpha": 100.0,
+      "n_players": 403,
+      "n_stints": 3639,
+      "player_coefficients": {
+        

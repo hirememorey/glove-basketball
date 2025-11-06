@@ -1,0 +1,482 @@
+{
+  "test_games": 5,
+  "total_extraction_attempts": 2501,
+  "total_successful_extractions": 2445,
+  "overall_accuracy_rate": 0.9776089564174331,
+  "total_possession_failures": 1,
+  "systemic_failures": [
+    {
+      "pattern": "period_events",
+      "occurrences": 55,
+      "severity": "LOW"
+    }
+  ],
+  "game_results": [
+    {
+      "game_id": "0022200001",
+      "total_events": 468,
+      "extraction_attempts": 446,
+      "successful_extractions": 435,
+      "failed_extractions": 11,
+      "failure_cases": [
+        {
+          "action_num": 2,
+          "action_type": "period",
+          "description": "Start of 1st Period (7:36 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 60,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay1st Period (7:43 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 194,
+          "action_type": "period",
+          "description": "End of 1st Period (8:12 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 201,
+          "action_type": "period",
+          "description": "Start of 2nd Period (8:16 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 337,
+          "action_type": "period",
+          "description": "End of 2nd Period (8:44 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 342,
+          "action_type": "period",
+          "description": "Start of 3rd Period (9:00 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 349,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay3rd Period (9:02 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 503,
+          "action_type": "period",
+          "description": "End of 3rd Period (9:36 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 510,
+          "action_type": "period",
+          "description": "Start of 4th Period (9:39 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 602,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (9:57 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 642,
+          "action_type": "period",
+          "description": "End of 4th Period (10:07 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        }
+      ],
+      "edge_cases": [],
+      "possession_relevant_failures": 0,
+      "accuracy_rate": 0.9753363228699552,
+      "possession_accuracy": 1.0
+    },
+    {
+      "game_id": "0022200002",
+      "total_events": 557,
+      "extraction_attempts": 526,
+      "successful_extractions": 515,
+      "failed_extractions": 11,
+      "failure_cases": [
+        {
+          "action_num": 2,
+          "action_type": "period",
+          "description": "Start of 1st Period (10:41 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 200,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay1st Period (11:12 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 219,
+          "action_type": "period",
+          "description": "End of 1st Period (11:21 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 230,
+          "action_type": "period",
+          "description": "Start of 2nd Period (11:21 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 419,
+          "action_type": "period",
+          "description": "End of 2nd Period (11:52 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 426,
+          "action_type": "period",
+          "description": "Start of 3rd Period (12:08 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 538,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay3rd Period (12:30 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 575,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay3rd Period (12:36 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 607,
+          "action_type": "period",
+          "description": "End of 3rd Period (12:43 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 618,
+          "action_type": "period",
+          "description": "Start of 4th Period (12:46 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 789,
+          "action_type": "period",
+          "description": "End of 4th Period (1:14 AM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        }
+      ],
+      "edge_cases": [],
+      "possession_relevant_failures": 0,
+      "accuracy_rate": 0.9790874524714829,
+      "possession_accuracy": 1.0
+    },
+    {
+      "game_id": "0022200003",
+      "total_events": 502,
+      "extraction_attempts": 477,
+      "successful_extractions": 467,
+      "failed_extractions": 10,
+      "failure_cases": [
+        {
+          "action_num": 2,
+          "action_type": "period",
+          "description": "Start of 1st Period (7:15 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 164,
+          "action_type": "period",
+          "description": "End of 1st Period (7:43 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 165,
+          "action_type": "period",
+          "description": "Start of 2nd Period (7:46 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 333,
+          "action_type": "period",
+          "description": "End of 2nd Period (8:14 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 339,
+          "action_type": "period",
+          "description": "Start of 3rd Period (8:30 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 488,
+          "action_type": "period",
+          "description": "End of 3rd Period (8:54 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 493,
+          "action_type": "period",
+          "description": "Start of 4th Period (8:57 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 556,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (9:05 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 602,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (9:13 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 687,
+          "action_type": "period",
+          "description": "End of 4th Period (9:32 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        }
+      ],
+      "edge_cases": [],
+      "possession_relevant_failures": 0,
+      "accuracy_rate": 0.9790356394129979,
+      "possession_accuracy": 1.0
+    },
+    {
+      "game_id": "0022200004",
+      "total_events": 527,
+      "extraction_attempts": 500,
+      "successful_extractions": 488,
+      "failed_extractions": 12,
+      "failure_cases": [
+        {
+          "action_num": 2,
+          "action_type": "period",
+          "description": "Start of 1st Period (7:14 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 170,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay1st Period (7:41 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 171,
+          "action_type": "period",
+          "description": "End of 1st Period (7:41 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 172,
+          "action_type": "period",
+          "description": "Start of 2nd Period (7:43 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 352,
+          "action_type": "period",
+          "description": "End of 2nd Period (8:14 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 363,
+          "action_type": "period",
+          "description": "Start of 3rd Period (8:30 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 510,
+          "action_type": "period",
+          "description": "End of 3rd Period (8:56 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 511,
+          "action_type": "period",
+          "description": "Start of 4th Period (8:59 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 542,
+          "action_type": "Foul",
+          "description": "Rick Carlisle Foul:T.FOUL (B.Barnaky)",
+          "team_tricode": "",
+          "possession_relevant": true
+        },
+        {
+          "action_num": 621,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (9:19 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 700,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (9:33 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 705,
+          "action_type": "period",
+          "description": "End of 4th Period (9:36 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        }
+      ],
+      "edge_cases": [
+        {
+          "action_num": 542,
+          "action_type": "Foul",
+          "description": "Rick Carlisle Foul:T.FOUL (B.Barnaky)",
+          "team_tricode": "",
+          "possession_relevant": true
+        }
+      ],
+      "possession_relevant_failures": 1,
+      "accuracy_rate": 0.976,
+      "possession_accuracy": 0.0
+    },
+    {
+      "game_id": "0022200010",
+      "total_events": 575,
+      "extraction_attempts": 552,
+      "successful_extractions": 540,
+      "failed_extractions": 12,
+      "failure_cases": [
+        {
+          "action_num": 2,
+          "action_type": "period",
+          "description": "Start of 1st Period (8:14 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 172,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay1st Period (8:40 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 173,
+          "action_type": "period",
+          "description": "End of 1st Period (8:40 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 178,
+          "action_type": "period",
+          "description": "Start of 2nd Period (8:42 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 298,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay2nd Period (9:01 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 357,
+          "action_type": "period",
+          "description": "End of 2nd Period (9:11 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 366,
+          "action_type": "period",
+          "description": "Start of 3rd Period (9:26 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 544,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay3rd Period (9:54 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 545,
+          "action_type": "period",
+          "description": "End of 3rd Period (9:55 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 554,
+          "action_type": "period",
+          "description": "Start of 4th Period (9:57 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 707,
+          "action_type": "Instant Replay",
+          "description": "Instant Replay4th Period (10:24 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        },
+        {
+          "action_num": 788,
+          "action_type": "period",
+          "description": "End of 4th Period (10:36 PM EST)",
+          "team_tricode": "",
+          "possession_relevant": false
+        }
+      ],
+      "edge_cases": [],
+      "possession_relevant_failures": 0,
+      "accuracy_rate": 0.9782608695652174,
+      "possession_accuracy": 1.0
+    }
+  ],
+  "test_passed": false
+}

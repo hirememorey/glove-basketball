@@ -1,0 +1,40 @@
+{
+  "temporal_stability": {
+    "early_season_games": [
+      5769
+    ],
+    "mid_season_games": [],
+    "late_season_games": [],
+    "stability_metrics": {},
+    "subset_sizes": {
+      "early": 5769,
+      "mid": 0,
+      "late": 0
+    }
+  },
+  "team_conference_stability": {
+    "eastern_conference_games": 0,
+    "western_conference_games": 0,
+    "stability_metrics": {},
+    "note": "Requires team conference mapping implementation"
+  },
+  "venue_effects": {
+    "home_stints": 2884,
+    "away_stints": 2884,
+    "venue_stability_metrics": {},
+    "home_advantage_effects": {}
+  },
+  "competitive_balance": {
+    "close_game_stints": 3639,
+    "blowout_game_stints": 2130,
+    "close_game_rapm": {
+      "model_name": "close_games",
+      "sample_size": 3639,
+      "games_covered": 114,
+      "r2_score": 0.0444731535730849,
+      "cv_mean_r2": -0.01612953873813523,
+      "best_alpha": 100.0,
+      "n_players": 403,
+      "n_stints": 3639,
+      "player_coefficients": {
+        
