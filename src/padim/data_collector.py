@@ -15,8 +15,9 @@ from nba_api.stats.endpoints import (
     CommonTeamYears
 )
 from .db.database import DatabaseConnection
+from .config.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class NBADataCollector:
     """Collect NBA data for PADIM analysis."""

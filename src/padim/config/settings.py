@@ -60,9 +60,12 @@ BASE_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 }
 
-# Logging Configuration
-LOG_FILE = "padim.log"
-LOG_LEVEL = "INFO"
+# Logging Configuration (imported from main config)
+import os
+from pathlib import Path
+LOG_FILE = os.path.join(PROJECT_ROOT, "logs", "padim.log")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+ENABLE_MONITORING = os.getenv("ENABLE_MONITORING", "true").lower() == "true"
 
 # API Endpoints (PADIM-focused - defensive metrics and stint data)
 API_BASE_URL = "https://stats.nba.com/stats"

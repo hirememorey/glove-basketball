@@ -11,15 +11,8 @@ from ..config import settings
 from typing import Dict
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler("padim.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+from src.padim.config.logging_config import get_logger
+logger = get_logger(__name__)
 
 import os
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "padim.db") # Define DB_PATH relative to project root

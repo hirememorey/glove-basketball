@@ -130,18 +130,39 @@ class BatchGameProcessor:
                 self.failed_games[game_id] = result['error']
                 return {'game_id': game_id, 'status': 'failed', 'error': result['error'], 'stints': 0}
 
+            # Validate that stints were actually created
+            stints_data = result.get('stints', [])
+            stints_count = len(stints_data) if isinstance(stints_data, list) else 0
+
+            if stints_count == 0:
+                logger.warning(f"No stints created for game {game_id}")
+                self.failed_games[game_id] = "No stints created"
+                return {'game_id': game_id, 'status': 'no_stints', 'error': 'No stints created', 'stints': 0}
+
+            # Validate stint count is reasonable (should be 15-40 stints per game)
+            if stints_count < 10:
+                logger.warning(f"Very low stint count for game {game_id}: {stints_count} (expected 15-40)")
+                self.failed_games[game_id] = f"Low stint count: {stints_count}"
+                return {'game_id': game_id, 'status': 'low_stints', 'error': f'Low stint count: {stints_count}', 'stints': stints_count}
+
             # Save stints to database
             save_success = self.stint_agg.save_stints_to_db(result)
 
             if not save_success:
                 logger.error(f"Failed to save stints for game {game_id}")
                 self.failed_games[game_id] = "Database save failed"
-                return {'game_id': game_id, 'status': 'save_failed', 'stints': 0}
+                return {'game_id': game_id, 'status': 'save_failed', 'stints': stints_count}
 
-            stints_count = result.get('total_stints', 0)
+            # Verify stints were actually saved to database
+            saved_count = self._verify_stints_saved(game_id, stints_count)
+            if saved_count != stints_count:
+                logger.error(f"Stint count mismatch for game {game_id}: expected {stints_count}, saved {saved_count}")
+                self.failed_games[game_id] = f"Save verification failed: {saved_count}/{stints_count} stints saved"
+                return {'game_id': game_id, 'status': 'save_verification_failed', 'stints': saved_count}
+
             self.processed_games.add(game_id)
 
-            logger.info(f"Successfully processed game {game_id}: {stints_count} stints")
+            logger.info(f"Successfully processed game {game_id}: {stints_count} stints created and saved")
             return {'game_id': game_id, 'status': 'success', 'stints': stints_count}
 
         except Exception as e:
@@ -198,10 +219,16 @@ class BatchGameProcessor:
         # Final progress save
         self._save_progress()
 
-        # Calculate statistics
-        successful = len([r for r in results if r['status'] == 'success'])
-        failed = len([r for r in results if r['status'] in ['failed', 'error', 'save_failed']])
-        already_processed = len([r for r in results if r['status'] == 'already_processed'])
+        # Calculate statistics with detailed breakdown
+        status_counts = {}
+        for result in results:
+            status = result.get('status', 'unknown')
+            status_counts[status] = status_counts.get(status, 0) + 1
+
+        successful = status_counts.get('success', 0)
+        failed = sum([count for status, count in status_counts.items()
+                     if status in ['failed', 'error', 'save_failed', 'no_stints', 'low_stints', 'save_verification_failed']])
+        already_processed = status_counts.get('already_processed', 0)
         total_stints = sum([r.get('stints', 0) for r in results])
 
         end_time = datetime.now()
@@ -218,11 +245,41 @@ class BatchGameProcessor:
             'games_per_hour': len(results) / (duration.total_seconds() / 3600) if duration.total_seconds() > 0 else 0,
             'start_time': self.start_time.isoformat(),
             'end_time': end_time.isoformat(),
-            'failed_games': list(self.failed_games.keys())[:10]  # First 10 failures
+            'status_breakdown': status_counts,
+            'failed_games': list(self.failed_games.keys())[:10],  # First 10 failures
+            'failure_reasons': list(self.failed_games.values())[:10]  # First 10 failure reasons
         }
 
         logger.info(f"Batch processing complete: {successful} successful, {failed} failed, {total_stints} stints created")
+        logger.info(f"Status breakdown: {status_counts}")
+
+        if failed > 0:
+            logger.warning(f"Top failure reasons: {list(self.failed_games.values())[:3]}")
         return summary
+
+    def _verify_stints_saved(self, game_id: str, expected_count: int) -> int:
+        """
+        Verify that stints were actually saved to the database.
+
+        Args:
+            game_id: Game ID to check
+            expected_count: Expected number of stints
+
+        Returns:
+            Actual number of stints found in database
+        """
+        try:
+            # Query database to count stints for this game
+            self.stint_agg.db.execute("SELECT COUNT(*) as count FROM stints WHERE game_id = ?", (game_id,))
+            result = self.stint_agg.db.fetchone()
+            actual_count = result['count'] if result else 0
+
+            logger.debug(f"Verified stints for game {game_id}: expected {expected_count}, found {actual_count}")
+            return actual_count
+
+        except Exception as e:
+            logger.error(f"Failed to verify stints saved for game {game_id}: {e}")
+            return 0
 
     def get_processing_status(self) -> Dict[str, Any]:
         """Get current processing status."""
@@ -250,6 +307,43 @@ class BatchGameProcessor:
 
         return self.process_games_batch(failed_list)
 
+    def validate_existing_games(self) -> Dict[str, Any]:
+        """
+        Validate which games in processed_games actually have stints.
+
+        Returns:
+            Dict with validation results
+        """
+        logger.info("Validating existing processed games...")
+
+        validation = {
+            'total_processed_games': len(self.processed_games),
+            'games_with_stints': 0,
+            'games_without_stints': 0,
+            'total_stints_found': 0,
+            'games_with_stints_list': [],
+            'games_without_stints_list': []
+        }
+
+        for game_id in self.processed_games:
+            stint_count = self._verify_stints_saved(game_id, 0)  # Expected count doesn't matter here
+
+            if stint_count > 0:
+                validation['games_with_stints'] += 1
+                validation['total_stints_found'] += stint_count
+                validation['games_with_stints_list'].append({
+                    'game_id': game_id,
+                    'stints': stint_count
+                })
+            else:
+                validation['games_without_stints'] += 1
+                validation['games_without_stints_list'].append(game_id)
+
+        validation['true_success_rate'] = validation['games_with_stints'] / len(self.processed_games) if self.processed_games else 0
+
+        logger.info(f"Validation complete: {validation['games_with_stints']}/{len(self.processed_games)} games have stints")
+        return validation
+
 def main():
     """Main batch processing function."""
     import argparse
@@ -260,6 +354,7 @@ def main():
     parser.add_argument('--batch-size', type=int, default=50, help='Games per batch before saving progress')
     parser.add_argument('--retry-failed', action='store_true', help='Retry previously failed games')
     parser.add_argument('--status', action='store_true', help='Show processing status only')
+    parser.add_argument('--validate-existing', action='store_true', help='Validate which existing games actually have stints')
 
     args = parser.parse_args()
 
@@ -269,6 +364,12 @@ def main():
         status = processor.get_processing_status()
         print("\n=== PROCESSING STATUS ===")
         print(json.dumps(status, indent=2))
+        return
+
+    if args.validate_existing:
+        validation_result = processor.validate_existing_games()
+        print("\n=== EXISTING GAMES VALIDATION ===")
+        print(json.dumps(validation_result, indent=2))
         return
 
     if args.retry_failed:

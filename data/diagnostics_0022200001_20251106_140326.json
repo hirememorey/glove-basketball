@@ -1,0 +1,132 @@
+{
+  "game_id": "0022200001",
+  "timestamp": "2025-11-06T14:03:25.288800",
+  "overall_success": false,
+  "processing_time_seconds": 1.2283153533935547,
+  "stages": {
+    "data_availability": {
+      "stage_name": "data_availability",
+      "success": true,
+      "checks": {
+        "rotation_data": {
+          "available": true,
+          "teams_count": 2,
+          "total_players": 62
+        },
+        "pbp_data": {
+          "available": true,
+          "events_count": 468,
+          "periods_covered": 4
+        },
+        "team_ids": {
+          "count": 2,
+          "ids": [
+            1610612738,
+            1610612755
+          ]
+        },
+        "home_away_teams": {
+          "home_team_id": 1610612738,
+          "away_team_id": 1610612755,
+          "resolved": true
+        }
+      },
+      "issues": []
+    },
+    "api_validation": {
+      "stage_name": "api_validation",
+      "success": true,
+      "endpoint_tests": {
+        "GameRotation": {
+          "success": true,
+          "response_time_seconds": 0.03604412078857422,
+          "data_size": 2
+        },
+        "PlayByPlayV3": {
+          "success": true,
+          "response_time_seconds": 0.05682086944580078,
+          "data_size": 468
+        }
+      },
+      "performance_metrics": {
+        "GameRotation_response_time": 0.03604412078857422,
+        "PlayByPlayV3_response_time": 0.05682086944580078
+      },
+      "issues": []
+    },
+    "data_quality": {
+      "stage_name": "data_quality",
+      "success": true,
+      "quality_metrics": {
+        "rotation": {
+          "total_players": 62,
+          "total_stints": 62,
+          "avg_stints_per_player": 1.0
+        },
+        "pbp": {
+          "total_events": 468,
+          "periods_covered": 4,
+          "teams_represented": 3
+        }
+      },
+      "issues": []
+    },
+    "pipeline_processing": {
+      "stage_name": "pipeline_processing",
+      "success": false,
+      "processing_steps": {
+        "get_rotations": {
+          "success": true,
+          "duration_seconds": 0.03195595741271973,
+          "teams_returned": 2
+        },
+        "get_pbp": {
+          "success": true,
+          "duration_seconds": 0.053933143615722656,
+          "events_count": 468
+        }
+      },
+      "performance": {},
+      "issues": [
+        "Pipeline processing failed: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all()."
+      ]
+    },
+    "stint_aggregation": {
+      "stage_name": "stint_aggregation",
+      "success": true,
+      "stint_analysis": {
+        "total_stints": 22,
+        "stints_with_data": 22,
+        "avg_stint_duration": 127.38181818181819
+      },
+      "lineup_validation": {
+        "issues_found": 0,
+        "sample_issues": []
+      },
+      "defensive_stats": {
+        "stints_with_defensive_data": 43,
+        "avg_opponent_fga_per_stint": 3.7674418604651163,
+        "avg_opponent_fg_pct": 0.5610834256183093
+      },
+      "issues": []
+    },
+    "database_integration": {
+      "stage_name": "database_integration",
+      "success": false,
+      "database_operations": {
+        "save_stints": {
+          "success": true,
+          "stints_attempted": 22
+        }
+      },
+      "issues": [
+        "Database integration test failed: 'NoneType' object has no attribute 'fetchone'"
+      ]
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "recommendations": [
+    "Debug stint aggregation pipeline - check each processing step"
+  ]
+}

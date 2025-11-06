@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-11-06T14:12:24.141282",
+  "current_season": "2022-23",
+  "target_games": [
+    "0022200001",
+    "0022200002"
+  ],
+  "total_games_processed": 2,
+  "total_stints_created": 50,
+  "start_time": "2025-11-06T14:12:22.725568",
+  "game_records": [
+    {
+      "game_id": "0022200001",
+      "state": "completed",
+      "created_at": "2025-11-06T14:12:00.173110",
+      "updated_at": "2025-11-06T14:12:23.114487",
+      "attempts": 2,
+      "last_attempt_at": "2025-11-06T14:12:23.114486",
+      "completed_at": "2025-11-06T14:12:23.755962",
+      "error_message": "Max retries exceeded",
+      "error_category": "max_retries",
+      "stints_created": 22,
+      "processing_time_seconds": 0.6346728801727295,
+      "api_calls_made": 0,
+      "metadata": {}
+    },
+    {
+      "game_id": "0022200002",
+      "state": "completed",
+      "created_at": "2025-11-06T14:12:00.173119",
+      "updated_at": "2025-11-06T14:12:23.756080",
+      "attempts": 2,
+      "last_attempt_at": "2025-11-06T14:12:23.756080",
+      "completed_at": "2025-11-06T14:12:24.141127",
+      "error_message": "Max retries exceeded",
+      "error_category": "max_retries",
+      "stints_created": 28,
+      "processing_time_seconds": 0.38166022300720215,
+      "api_calls_made": 0,
+      "metadata": {}
+    }
+  ]
+}

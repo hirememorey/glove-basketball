@@ -5,8 +5,9 @@ import pandas as pd
 from typing import List, Dict, Tuple, Optional, Set
 from nba_api.stats.endpoints import GameRotation, PlayByPlayV3, BoxScoreHustleV2, BoxScoreSummaryV2
 from .db.database import DatabaseConnection
+from .config.logging_config import get_logger, log_performance_metric, log_api_call
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class StintAggregator:
     """Aggregates defensive statistics by stint for RAPM modeling."""
@@ -24,20 +25,41 @@ class StintAggregator:
         Returns:
             Dict containing stint data and metadata
         """
+        import time
+        start_time = time.time()
+
         try:
-            logger.info(f"Aggregating stints for game {game_id}")
+            logger.info(f"Aggregating stints for game {game_id}", extra={
+                'extra_data': {'game_id': game_id, 'operation': 'stint_aggregation_start'}
+            })
 
             # Get rotation data for both teams
             logger.info("Getting rotation data...")
+            rotation_start = time.time()
             rotation_data = self._get_game_rotations(game_id)
+            rotation_duration = time.time() - rotation_start
+
             if not rotation_data:
+                log_performance_metric('get_game_rotations', rotation_duration, success=False,
+                                     extra_data={'game_id': game_id, 'error': 'no_rotation_data'})
                 return {'error': 'Could not retrieve rotation data'}
+
+            log_performance_metric('get_game_rotations', rotation_duration, success=True,
+                                 extra_data={'game_id': game_id, 'teams_count': len(rotation_data)})
 
             # Get play-by-play data for defensive stats
             logger.info("Getting play-by-play data...")
+            pbp_start = time.time()
             pbp_data = self._get_play_by_play_data(game_id)
+            pbp_duration = time.time() - pbp_start
+
             if pbp_data is None:
+                log_performance_metric('get_play_by_play_data', pbp_duration, success=False,
+                                     extra_data={'game_id': game_id, 'error': 'no_pbp_data'})
                 return {'error': 'Could not retrieve play-by-play data'}
+
+            log_performance_metric('get_play_by_play_data', pbp_duration, success=True,
+                                 extra_data={'game_id': game_id, 'events_count': len(pbp_data)})
 
             # Extract team IDs from PBP data
             team_ids = pbp_data['teamId'].unique()
@@ -45,18 +67,42 @@ class StintAggregator:
 
             # Get home/away team IDs once for the entire game
             logger.info("Getting home/away team IDs...")
+            team_id_start = time.time()
             home_team_id, away_team_id = self._get_home_away_team_ids(game_id, team_ids)
+            team_id_duration = time.time() - team_id_start
+
             if not home_team_id or not away_team_id:
+                log_performance_metric('get_home_away_team_ids', team_id_duration, success=False,
+                                     extra_data={'game_id': game_id, 'error': 'could_not_determine_teams'})
                 return {'error': 'Could not determine home/away teams'}
+
+            log_performance_metric('get_home_away_team_ids', team_id_duration, success=True,
+                                 extra_data={'game_id': game_id, 'home_team_id': home_team_id, 'away_team_id': away_team_id})
 
             # Identify all stint boundaries (substitution time points)
             logger.info("Finding stint boundaries...")
+            boundary_start = time.time()
             stint_boundaries = self._find_stint_boundaries(rotation_data)
+            boundary_duration = time.time() - boundary_start
             logger.info(f"Found {len(stint_boundaries)} stint boundaries")
+
+            log_performance_metric('find_stint_boundaries', boundary_duration, success=True,
+                                 extra_data={'game_id': game_id, 'stint_boundaries_count': len(stint_boundaries)})
 
             # Aggregate stints with defensive statistics
             logger.info("Aggregating stint stats...")
+            aggregation_start = time.time()
             stints = self._aggregate_stint_stats(game_id, stint_boundaries, rotation_data, pbp_data, home_team_id, away_team_id)
+            aggregation_duration = time.time() - aggregation_start
+
+            if stints:
+                log_performance_metric('aggregate_stint_stats', aggregation_duration, success=True,
+                                     extra_data={'game_id': game_id, 'stints_created': len(stints)})
+            else:
+                log_performance_metric('aggregate_stint_stats', aggregation_duration, success=False,
+                                     extra_data={'game_id': game_id, 'error': 'no_stints_created'})
+
+            total_duration = time.time() - start_time
 
             result = {
                 'game_id': game_id,
@@ -65,26 +111,48 @@ class StintAggregator:
                 'rotation_data': rotation_data,
                 'stint_boundaries': stint_boundaries,
                 'home_team_id': home_team_id,
-                'away_team_id': away_team_id
+                'away_team_id': away_team_id,
+                'processing_time_seconds': total_duration
             }
 
-            logger.info(f"Successfully aggregated {len(stints)} stints for game {game_id}")
+            log_performance_metric('aggregate_game_stints', total_duration, success=True,
+                                 extra_data={
+                                     'game_id': game_id,
+                                     'stints_created': len(stints),
+                                     'stint_boundaries_found': len(stint_boundaries)
+                                 })
+
+            logger.info(f"Successfully aggregated {len(stints)} stints for game {game_id} in {total_duration:.2f}s")
             return result
 
         except Exception as e:
-            logger.error(f"Error aggregating stints for game {game_id}: {e}")
+            total_duration = time.time() - start_time
+            log_performance_metric('aggregate_game_stints', total_duration, success=False,
+                                 extra_data={'game_id': game_id, 'error': str(e)})
+
+            logger.error(f"Error aggregating stints for game {game_id}: {e}", extra={
+                'extra_data': {'game_id': game_id, 'error': str(e), 'operation': 'stint_aggregation_failed'}
+            })
             import traceback
             logger.error(traceback.format_exc())
             return {'error': str(e)}
 
     def _get_game_rotations(self, game_id: str) -> Optional[List[pd.DataFrame]]:
         """Get rotation data for both teams in a game."""
+        import time
+        api_start = time.time()
+
         try:
             endpoint = GameRotation(game_id=game_id)
             dfs = endpoint.get_data_frames()
+            api_duration = time.time() - api_start
+
+            log_api_call('GameRotation', True, api_duration, extra_data={'game_id': game_id, 'data_frames_returned': len(dfs)})
 
             if len(dfs) != 2:
-                logger.warning(f"Expected 2 teams, got {len(dfs)} for game {game_id}")
+                logger.warning(f"Expected 2 teams, got {len(dfs)} for game {game_id}", extra={
+                    'extra_data': {'game_id': game_id, 'expected_teams': 2, 'actual_teams': len(dfs)}
+                })
                 return None
 
             # Validate data structure
@@ -92,7 +160,9 @@ class StintAggregator:
                 required_cols = ['PERSON_ID', 'IN_TIME_REAL', 'OUT_TIME_REAL']
                 missing_cols = [col for col in required_cols if col not in df.columns]
                 if missing_cols:
-                    logger.error(f"Missing columns {missing_cols} in team {i+1} rotation data")
+                    logger.error(f"Missing columns {missing_cols} in team {i+1} rotation data", extra={
+                        'extra_data': {'game_id': game_id, 'team_index': i, 'missing_columns': missing_cols}
+                    })
                     return None
 
             # Convert GameRotation times from tenths of seconds to seconds
@@ -101,24 +171,48 @@ class StintAggregator:
                 df['IN_TIME_REAL'] = df['IN_TIME_REAL'] / 10
                 df['OUT_TIME_REAL'] = df['OUT_TIME_REAL'] / 10
 
+            logger.debug(f"Successfully retrieved rotation data for game {game_id}", extra={
+                'extra_data': {'game_id': game_id, 'teams_processed': len(dfs)}
+            })
             return dfs
 
         except Exception as e:
-            logger.error(f"Error getting rotation data for game {game_id}: {e}")
+            api_duration = time.time() - api_start
+            log_api_call('GameRotation', False, api_duration, error_message=str(e),
+                        extra_data={'game_id': game_id})
+            logger.error(f"Error getting rotation data for game {game_id}: {e}", extra={
+                'extra_data': {'game_id': game_id, 'error': str(e)}
+            })
             return None
 
     def _get_play_by_play_data(self, game_id: str) -> Optional[pd.DataFrame]:
         """Get play-by-play data for defensive statistics."""
+        import time
+        api_start = time.time()
+
         try:
             endpoint = PlayByPlayV3(game_id=game_id)
             df = endpoint.get_data_frames()[0]
+            api_duration = time.time() - api_start
+
+            log_api_call('PlayByPlayV3', True, api_duration,
+                        extra_data={'game_id': game_id, 'events_count': len(df)})
+
+            logger.debug(f"Successfully retrieved PBP data for game {game_id}", extra={
+                'extra_data': {'game_id': game_id, 'events_count': len(df)}
+            })
 
             # Filter to only opponent field goal attempts for defensive stats
             # This is a simplified approach - in production we'd want more sophisticated filtering
             return df
 
         except Exception as e:
-            logger.error(f"Error getting play-by-play data for game {game_id}: {e}")
+            api_duration = time.time() - api_start
+            log_api_call('PlayByPlayV3', False, api_duration, error_message=str(e),
+                        extra_data={'game_id': game_id})
+            logger.error(f"Error getting play-by-play data for game {game_id}: {e}", extra={
+                'extra_data': {'game_id': game_id, 'error': str(e)}
+            })
             return None
 
     def _find_stint_boundaries(self, rotation_data: List[pd.DataFrame]) -> List[float]:

@@ -1,0 +1,80 @@
+{
+  "game_id": "0022200001",
+  "timestamp": "2025-11-06T14:03:12.647162",
+  "overall_success": false,
+  "processing_time_seconds": 7.596790075302124,
+  "stages": {
+    "data_availability": {
+      "stage_name": "data_availability",
+      "success": false,
+      "checks": {},
+      "issues": [
+        "Data availability check failed: log_api_call() got an unexpected keyword argument 'extra_data'"
+      ]
+    },
+    "api_validation": {
+      "stage_name": "api_validation",
+      "success": false,
+      "endpoint_tests": {
+        "GameRotation": {
+          "success": false,
+          "response_time_seconds": 0.04544806480407715,
+          "error": "log_api_call() got an unexpected keyword argument 'extra_data'"
+        },
+        "PlayByPlayV3": {
+          "success": false,
+          "response_time_seconds": 0.6827120780944824,
+          "error": "log_api_call() got an unexpected keyword argument 'extra_data'"
+        }
+      },
+      "performance_metrics": {},
+      "issues": [
+        "GameRotation failed: log_api_call() got an unexpected keyword argument 'extra_data'",
+        "PlayByPlayV3 failed: log_api_call() got an unexpected keyword argument 'extra_data'"
+      ]
+    },
+    "data_quality": {
+      "stage_name": "data_quality",
+      "success": false,
+      "quality_metrics": {},
+      "issues": [
+        "Data quality assessment failed: log_api_call() got an unexpected keyword argument 'extra_data'"
+      ]
+    },
+    "pipeline_processing": {
+      "stage_name": "pipeline_processing",
+      "success": false,
+      "processing_steps": {},
+      "performance": {},
+      "issues": [
+        "Pipeline processing failed: log_api_call() got an unexpected keyword argument 'extra_data'"
+      ]
+    },
+    "stint_aggregation": {
+      "stage_name": "stint_aggregation",
+      "success": false,
+      "stint_analysis": {},
+      "lineup_validation": {},
+      "defensive_stats": {},
+      "issues": [
+        "Stint aggregation error: log_api_call() got an unexpected keyword argument 'extra_data'"
+      ]
+    },
+    "database_integration": {
+      "stage_name": "database_integration",
+      "success": true,
+      "database_operations": {},
+      "issues": []
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "recommendations": [
+    "Fix GameRotation API access - rotation data unavailable",
+    "Fix PlayByPlayV3 API access - PBP data unavailable",
+    "Fix team ID resolution logic",
+    "Address slow API response times (>10 seconds)",
+    "Fix data quality: Data quality assessment failed: log_api_call() got an unexpected keyword argument 'extra_data'",
+    "Debug stint aggregation pipeline - check each processing step"
+  ]
+}

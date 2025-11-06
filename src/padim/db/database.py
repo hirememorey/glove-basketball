@@ -8,7 +8,8 @@ from typing import Optional, List, Dict, Any
 from src.padim.config.settings import DB_PATH
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from src.padim.config.logging_config import get_logger
+logger = get_logger(__name__)
 
 class DatabaseConnection:
     def __init__(self, db_path: str = DB_PATH):

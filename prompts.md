@@ -29,7 +29,7 @@ Let’s pause. Now that we’re here, I want you to think about your mental spac
 Before you begin, another developer started at this exact spot and spent a lot of time and energy trying to solve this issue. When said developer was asked what information did they wish they knew earlier that would have saved them the most time and heartache, they had the following to say. Please use their insights to come up with a first principles plan of implementation. From there ask yourself why won't this plan work? Then use the answer from that question to further redevelop and refine your plan. Do not generate any code just walk me through your plan in detail.
 
 ## @UpdateDocs
-Please update and/or remove any relevant markdown files based on the changes we've implemented. Generally it's better to update existing docs than creating new ones. Ensure that another developer could pick up from where we left off with all the context they need. Once done, please commit and push the changes to github.
+Please update and/or remove any relevant markdown files based on the changes we've implemented or insights we've developed. Generally it's better to update existing docs than creating new ones. Ensure that another developer could pick up from where we left off with all the context they need. Once done, please commit and push the changes to github.
 
 ## @CleanupDocs
 I want you to utilize first principles to ensure that only necessary markdown files and markdown content within those files are in this project. I worry about documentation creep and want to make sure that only the minimum amount of content is available for a brand new developer with no context to pick up from where the project was last left off. Do not touch prompts.md
