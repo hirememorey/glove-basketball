@@ -39,6 +39,16 @@ class StintAggregator:
             if pbp_data is None:
                 return {'error': 'Could not retrieve play-by-play data'}
 
+            # Extract team IDs from PBP data
+            team_ids = pbp_data['teamId'].unique()
+            team_ids = [int(tid) for tid in team_ids if tid != 0]  # Remove null team ID and convert to int
+
+            # Get home/away team IDs once for the entire game
+            logger.info("Getting home/away team IDs...")
+            home_team_id, away_team_id = self._get_home_away_team_ids(game_id, team_ids)
+            if not home_team_id or not away_team_id:
+                return {'error': 'Could not determine home/away teams'}
+
             # Identify all stint boundaries (substitution time points)
             logger.info("Finding stint boundaries...")
             stint_boundaries = self._find_stint_boundaries(rotation_data)
@@ -46,14 +56,16 @@ class StintAggregator:
 
             # Aggregate stints with defensive statistics
             logger.info("Aggregating stint stats...")
-            stints = self._aggregate_stint_stats(game_id, stint_boundaries, rotation_data, pbp_data)
+            stints = self._aggregate_stint_stats(game_id, stint_boundaries, rotation_data, pbp_data, home_team_id, away_team_id)
 
             result = {
                 'game_id': game_id,
                 'stints': stints,
                 'total_stints': len(stints),
                 'rotation_data': rotation_data,
-                'stint_boundaries': stint_boundaries
+                'stint_boundaries': stint_boundaries,
+                'home_team_id': home_team_id,
+                'away_team_id': away_team_id
             }
 
             logger.info(f"Successfully aggregated {len(stints)} stints for game {game_id}")
@@ -82,6 +94,12 @@ class StintAggregator:
                 if missing_cols:
                     logger.error(f"Missing columns {missing_cols} in team {i+1} rotation data")
                     return None
+
+            # Convert GameRotation times from tenths of seconds to seconds
+            # GameRotation API returns times in tenths of seconds (28800 = 2880 seconds = 48 minutes)
+            for df in dfs:
+                df['IN_TIME_REAL'] = df['IN_TIME_REAL'] / 10
+                df['OUT_TIME_REAL'] = df['OUT_TIME_REAL'] / 10
 
             return dfs
 
@@ -189,7 +207,8 @@ class StintAggregator:
         return [p['player_id'] for p in resolved_lineup]
 
     def _aggregate_stint_stats(self, game_id: str, stint_boundaries: List[float],
-                             rotation_data: List[pd.DataFrame], pbp_data: pd.DataFrame) -> List[Dict]:
+                             rotation_data: List[pd.DataFrame], pbp_data: pd.DataFrame,
+                             home_team_id: int, away_team_id: int) -> List[Dict]:
         """Aggregate defensive statistics for each stint."""
         stints = []
 
@@ -211,7 +230,7 @@ class StintAggregator:
 
             # Calculate defensive statistics for this stint
             stint_stats = self._calculate_stint_defensive_stats(
-                game_id, start_time, end_time, lineups, pbp_data
+                game_id, start_time, end_time, lineups, pbp_data, home_team_id, away_team_id
             )
 
             if stint_stats:
@@ -229,7 +248,8 @@ class StintAggregator:
         return stints
 
     def _calculate_stint_defensive_stats(self, game_id: str, start_time: float, end_time: float,
-                                       lineups: Dict[str, List[int]], pbp_data: pd.DataFrame) -> Optional[Dict]:
+                                       lineups: Dict[str, List[int]], pbp_data: pd.DataFrame,
+                                       home_team_id: int, away_team_id: int) -> Optional[Dict]:
         """Calculate defensive statistics for a stint."""
         try:
             # Convert stint time range to PBP-compatible format
@@ -237,10 +257,10 @@ class StintAggregator:
 
             # Get opponent shooting data during this stint
             home_defensive_stats = self._calculate_opponent_shooting_stats(
-                game_id, stint_events, 'home', lineups
+                game_id, stint_events, 'home', lineups, home_team_id, away_team_id
             )
             away_defensive_stats = self._calculate_opponent_shooting_stats(
-                game_id, stint_events, 'away', lineups
+                game_id, stint_events, 'away', lineups, home_team_id, away_team_id
             )
 
             return {
@@ -327,7 +347,7 @@ class StintAggregator:
             return 0.0
 
     def _calculate_opponent_shooting_stats(self, game_id: str, stint_events: pd.DataFrame, team_key: str,
-                                         lineups: Dict[str, List[int]]) -> Dict[str, int]:
+                                         lineups: Dict[str, List[int]], home_team_id: int, away_team_id: int) -> Dict[str, int]:
         """Calculate opponent shooting statistics during the stint."""
         try:
             stats = {
@@ -341,20 +361,7 @@ class StintAggregator:
             if stint_events.empty:
                 return stats
 
-            # Get team IDs for this game from the stint events
-            team_ids = stint_events['teamId'].unique()
-            team_ids = [tid for tid in team_ids if tid != 0]  # Remove null team ID
-
-            if len(team_ids) != 2:
-                logger.warning(f"Expected 2 teams, found {len(team_ids)} in stint events")
-                return stats
-
-            # Get proper home/away team mapping from game data
-            home_team_id, away_team_id = self._get_home_away_team_ids(game_id, team_ids)
-
-            if not home_team_id or not away_team_id:
-                logger.warning(f"Could not determine home/away teams for game {game_id}")
-                return stats
+            # Use the pre-fetched home/away team IDs
 
             # Filter to field goal attempts (both made and missed)
             fg_events = stint_events[stint_events['isFieldGoal'] == 1].copy()
@@ -442,6 +449,8 @@ class StintAggregator:
 
             game_id = stint_data['game_id']
             stints = stint_data['stints']
+            home_team_id = stint_data.get('home_team_id')
+            away_team_id = stint_data.get('away_team_id')
 
             logger.info(f"Saving {len(stints)} stints for game {game_id}")
 
@@ -450,7 +459,7 @@ class StintAggregator:
 
             # Save each stint
             for stint in stints:
-                self._save_single_stint(stint)
+                self._save_single_stint(stint, home_team_id, away_team_id)
 
             self.db.commit()
             logger.info(f"Successfully saved {len(stints)} stints for game {game_id}")
@@ -497,21 +506,19 @@ class StintAggregator:
         '''
         self.db.execute(create_sql)
 
-    def _save_single_stint(self, stint: Dict):
+    def _save_single_stint(self, stint: Dict, home_team_id: Optional[int] = None, away_team_id: Optional[int] = None):
         """Save a single stint to the database."""
-        # Extract team IDs from player data (simplified)
-        # In production, we'd look up team IDs properly
 
         logger.info(f"Saving stint: {len(stint['home_players'])} home players, {len(stint['away_players'])} away players")
 
         insert_sql = '''
             INSERT OR REPLACE INTO stints
-            (game_id, stint_start, stint_end, duration,
+            (game_id, stint_start, stint_end, duration, home_team_id, away_team_id,
              home_player_1, home_player_2, home_player_3, home_player_4, home_player_5,
              away_player_1, away_player_2, away_player_3, away_player_4, away_player_5,
              home_opp_fga, home_opp_fgm, home_opp_fg3a, home_opp_fg3m, home_opp_rim_attempts,
              away_opp_fga, away_opp_fgm, away_opp_fg3a, away_opp_fg3m, away_opp_rim_attempts)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         '''
 
         home_players = stint['home_players'][:5]
@@ -525,6 +532,8 @@ class StintAggregator:
             stint['stint_start'],
             stint['stint_end'],
             stint['duration'],
+            home_team_id,
+            away_team_id,
             *home_players,  # Should be 5 values
             *away_players,  # Should be 5 values
             stint['home_defensive_stats']['opponent_fga'],
@@ -539,9 +548,6 @@ class StintAggregator:
             stint['away_defensive_stats']['opponent_rim_attempts']
         )
 
-        placeholders_count = insert_sql.count('?')
-        logger.info(f"Values tuple length: {len(values)}, Placeholders: {placeholders_count}")
-        logger.info(f"Values: {list(values)}")
         self.db.execute(insert_sql, values)
 
     def close(self):
