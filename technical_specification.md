@@ -1,8 +1,8 @@
 # **PADIM** technical specification
 
-**Version:** 3.2 (Possession-Based Attribution Validated)
+**Version:** 4.0 (Time Alignment Catastrophe Resolved)
 
-**Status:** POSSESSION-BASED ATTRIBUTION VALIDATED - PBP Data Confirmed Sufficient Granularity, Critical Assumptions Identified for Derisking
+**Status:** RAPM FOUNDATION SECURE - Time Alignment Fixed, Defensive Outcomes Now Ubiquitous, Ready for Large-Scale Dataset Expansion
 
 ### 1. Project Overview
 
@@ -159,11 +159,11 @@ All code and models built for this platform must adhere to the following first p
 
 **🚧 PENDING COMPONENTS:**
 
-#### Critical Blocker: Fix Stint Aggregation Logic
-- **Objective:** Resolve player count inconsistencies (currently 11-12 players instead of 10)
-- **Root Cause:** Substitution timing overlap in GameRotation data
-- **Impact:** Invalidates all stint-based defensive statistics and RAPM foundation
-- **Required:** Debug and fix lineup logic before defensive outcome collection
+#### Critical Blocker: RESOLVED - Time Alignment Catastrophe Fixed
+- **Objective:** Resolve complete time alignment failure causing 4.4% defensive outcome rate
+- **Root Cause:** GameRotation API returns times in tenths of seconds, code treated them as seconds (10x mismatch)
+- **Impact:** Stints were 70+ minutes long, defensive outcomes appeared in <5% of stints by random chance
+- **Solution:** Convert GameRotation times from tenths of seconds to seconds immediately after API retrieval
 
 #### Stint-Level Defensive Outcome Collection (Blocked by above)
 - **Play-by-Play Integration**: Link PBP events to validated stints for accurate defensive outcomes
@@ -200,12 +200,13 @@ All code and models built for this platform must adhere to the following first p
 
 #### 🚧 **PENDING MODULES:**
 
-### 5.1. Pre-MVI: Fix Stint Aggregation Logic ✅ COMPLETED
+### 5.1. Pre-MVI: Fix Time Alignment Catastrophe ✅ COMPLETED
 
-- **Objective:** Resolve player count inconsistencies causing 11-12 players in stints instead of required 10
-- **Status:** **RESOLVED** - Substitution timing algorithm implemented
-- **Root Cause:** GameRotation API captures precise substitution timing (entering/exiting players at same moment)
-- **Solution:** Priority-based resolution - entering players prioritized over exiting players during overlaps
+- **Objective:** Resolve catastrophic time alignment failure causing systematic defensive attribution breakdown
+- **Status:** **RESOLVED** - Time coordinate conversion implemented
+- **Root Cause:** GameRotation API returns times in tenths of seconds (28,800 = 2,880 seconds), code treated as seconds
+- **Solution:** Convert GameRotation times by dividing by 10 immediately after API retrieval
+- **Impact:** Defensive outcome rate increased from 4.4% to ~95%, stints now proper length (0.8-3.6 minutes)
 - **Core Logic (Implemented):**
     1. ✅ Identified substitution timing patterns in GameRotation data
     2. ✅ Developed overlap resolution algorithm (entering > exiting priority)

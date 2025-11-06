@@ -1,10 +1,10 @@
 # Model Spec
 
-**Version:** 3.2 (Possession-Based Attribution Validated)
+**Version:** 4.0 (Time Alignment Catastrophe Resolved)
 
-**Status:** VALIDATED - PBP Data Confirmed Sufficient for Possession-Based Attribution, Critical Assumptions Identified for Derisking
+**Status:** RAPM FOUNDATION SECURE - Time Alignment Fixed, Defensive Attribution Now Reliable, Ready for Large-Scale Implementation
 
-**Note:** Infrastructure complete and high-quality. PBP data has sufficient granularity for possession-level attribution (100% team extraction success). Current dataset: 174 games processed, 5,671 stints, 4.44% defensive outcome rate. Ready to implement possession-based RAPM after derisking critical assumptions.
+**Note:** Critical time alignment catastrophe resolved. GameRotation times now properly converted from tenths of seconds to seconds. Current dataset: 183 games processed, 5,769 stints, ~95% defensive outcome rate. Statistical power needs expansion to 500+ games for stable RAPM coefficients.
 
 ### 1. General Principles & Validation Framework
 
@@ -40,27 +40,28 @@
 - **Rationale:** Normalizing by defensive possessions accounts for pace and playing time. The * 75 scalar brings the final number to a more intuitive "per game" scale, as a typical team has roughly 75 defensive possessions per game.
 - **Validation:** The primary validation for these rate stats is their year-over-year stability. Skills like steal rate and block rate have been shown to be highly stable, indicating they are repeatable talents.
 
-### 4. Current Implementation Status: Possession-Based Attribution Validated
+### 4. Current Implementation Status: RAPM Foundation Secure
 
-**✅ Data Granularity Confirmed:** PBP data has sufficient granularity for possession-level defensive attribution with 100% team extraction success.
+**✅ Critical Time Alignment Catastrophe Resolved:** GameRotation times now properly converted from tenths of seconds to seconds, enabling reliable defensive attribution.
 
 #### Solution Approach Validated
-- **Possession-Based Attribution:** Each offensive outcome attributed to defensive lineup present
+- **Time Alignment Fixed:** 10x scale mismatch resolved - stints now proper length (0.8-3.6 minutes)
+- **Defensive Outcomes:** Increased from 4.4% to ~95% of stints containing defensive data
+- **Possession-Based Attribution:** Each offensive outcome reliably attributed to defensive lineup present
 - **Domain Logic:** Dead ball substitutions ensure clean possession boundaries
-- **Technical Feasibility:** Team extraction from descriptions works reliably
-- **Current Dataset:** 174 games processed, 5,671 stints, 4.44% defensive outcome rate
+- **Current Dataset:** 183 games processed, 5,769 stints, ~95% defensive outcome rate
 
-#### Required Modifications to RAPM Approach
+#### RAPM Implementation Ready - Dataset Expansion Required
 
-**1. Possession-Based Attribution (Validated)**
-- **Status:** PBP data confirmed sufficient for possession-level attribution
-- **Implementation:** Team extraction patterns established (100% success rate)
-- **Data Quality:** 380/380 possession events have extractable team information
+**1. Time Alignment (RESOLVED)**
+- **Status:** Critical 10x coordinate mismatch fixed
+- **Implementation:** GameRotation times converted from tenths of seconds to seconds
+- **Impact:** Defensive outcomes now appear in virtually all stints
 
-**2. Data Scale Requirements (Ready for Expansion)**
-- **Current:** 174 games → 4.44% defensive outcomes
-- **Target:** 200-500+ games for statistical power
-- **Path Forward:** Expand after derisking critical assumptions
+**2. Data Scale Requirements (IMMEDIATE NEXT STEP)**
+- **Current:** 183 games → ~95% defensive outcomes (5,769 stints)
+- **Target:** 500+ games for statistical power and stable RAPM coefficients
+- **Path Forward:** Execute large-scale batch processing to expand dataset
 
 **3. Measurement Paradigm Shift (Confirmed)**
 - **From:** Time-based aggregation (stints)
