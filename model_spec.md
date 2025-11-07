@@ -1,8 +1,8 @@
 # Model Spec
 
-**Version:** 6.0 (Dataset Expansion Complete - RAPM Implementation Ready)
+**Version:** 7.0 (Subset Training Complete - Progressive Scaling Ready)
 
-**Status:** DATASET READY FOR RAPM - Large-scale expansion complete with 491 games (12,141 stints). All defensive domains validated. Ready for Ridge regression model implementation.
+**Status:** RAPM SUBSET TRAINING COMPLETE - Large-scale dataset (491 games, 12,141 stints) with validated subset training approach. Progressive scaling to full dataset in progress.
 
 **Note:** Dataset expansion successfully completed. 491/500 games processed (98.2% success rate) with complete defensive outcome data. Statistical power achieved for stable RAPM coefficients across all three defensive domains.
 

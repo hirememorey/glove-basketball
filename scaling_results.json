@@ -1,0 +1,266 @@
+{
+  "scaling_results": {
+    "25": {
+      "players_in_subset": 25,
+      "matrix_shape": [
+        11646,
+        25
+      ],
+      "training_time_seconds": 0.016746044158935547,
+      "domains": [
+        "shot_influence"
+      ],
+      "results": {
+        "shot_influence": {
+          "domain": "shot_influence",
+          "best_alpha": 100.0,
+          "r2_score": -0.00023348813248502687,
+          "mse": 16.886742379651213,
+          "n_train": 9316,
+          "n_test": 2330,
+          "coefficient_mean": -0.000799753722920341,
+          "coefficient_std": 0.039190956043248355,
+          "process_type": "padim_data_processing",
+          "version": "5.0",
+          "stability": {
+            "mean_coefficient": -0.000799753722920341,
+            "std_coefficient": 0.039190956043248355,
+            "min_coefficient": -0.08377336685270352,
+            "max_coefficient": 0.10033416301501002,
+            "percentile_25": -0.02516126479343956,
+            "percentile_75": 0.02546546852980465,
+            "n_players_above_zero": 12,
+            "n_players_below_zero": 13,
+            "coefficient_range": 0.18410752986771356
+          }
+        }
+      }
+    },
+    "50": {
+      "players_in_subset": 50,
+      "matrix_shape": [
+        11646,
+        50
+      ],
+      "training_time_seconds": 0.024563074111938477,
+      "domains": [
+        "shot_influence"
+      ],
+      "results": {
+        "shot_influence": {
+          "domain": "shot_influence",
+          "best_alpha": 100.0,
+          "r2_score": -0.0031932759889163886,
+          "mse": 16.936711887394146,
+          "n_train": 9316,
+          "n_test": 2330,
+          "coefficient_mean": 0.0018545564348427942,
+          "coefficient_std": 0.0662499947596175,
+          "process_type": "padim_data_processing",
+          "version": "5.0",
+          "stability": {
+            "mean_coefficient": 0.0018545564348427942,
+            "std_coefficient": 0.0662499947596175,
+            "min_coefficient": -0.14664974132795205,
+            "max_coefficient": 0.15949442989065962,
+            "percentile_25": -0.03103815893319501,
+            "percentile_75": 0.03859069086281987,
+            "n_players_above_zero": 28,
+            "n_players_below_zero": 22,
+            "coefficient_range": 0.3061441712186117
+          }
+        }
+      }
+    },
+    "100": {
+      "players_in_subset": 100,
+      "matrix_shape": [
+        11646,
+        100
+      ],
+      "training_time_seconds": 0.04471182823181152,
+      "domains": [
+        "shot_influence"
+      ],
+      "results": {
+        "shot_influence": {
+          "domain": "shot_influence",
+          "best_alpha": 100.0,
+          "r2_score": -0.0044195259758963434,
+          "mse": 16.957414421221365,
+          "n_train": 9316,
+          "n_test": 2330,
+          "coefficient_mean": 0.004377358533152065,
+          "coefficient_std": 0.06231137466505196,
+          "process_type": "padim_data_processing",
+          "version": "5.0",
+          "stability": {
+            "mean_coefficient": 0.004377358533152065,
+            "std_coefficient": 0.06231137466505196,
+            "min_coefficient": -0.16981195174036545,
+            "max_coefficient": 0.1679520615003762,
+            "percentile_25": -0.03454403042914443,
+            "percentile_75": 0.04688480460275478,
+            "n_players_above_zero": 50,
+            "n_players_below_zero": 50,
+            "coefficient_range": 0.3377640132407417
+          }
+        }
+      }
+    },
+    "200": {
+      "players_in_subset": 405,
+      "matrix_shape": [
+        11646,
+        405
+      ],
+      "training_time_seconds": 0.2490248680114746,
+      "domains": [
+        "shot_influence"
+      ],
+      "results": {
+        "shot_influence": {
+          "domain": "shot_influence",
+          "best_alpha": 100.0,
+          "r2_score": -0.041387060850954116,
+          "mse": 17.581529935501354,
+          "n_train": 9316,
+          "n_test": 2330,
+          "coefficient_mean": 0.007775128646108632,
+          "coefficient_std": 0.06679858504131743,
+          "process_type": "padim_data_processing",
+          "version": "5.0",
+          "stability": {
+            "mean_coefficient": 0.007775128646108632,
+            "std_coefficient": 0.06679858504131743,
+            "min_coefficient": -0.19080707350625828,
+            "max_coefficient": 0.2286562360679151,
+            "percentile_25": -0.038580037585856514,
+            "percentile_75": 0.05259548816788401,
+            "n_players_above_zero": 216,
+            "n_players_below_zero": 189,
+            "coefficient_range": 0.4194633095741734
+          }
+        }
+      }
+    },
+    "355": {
+      "players_in_subset": 355,
+      "matrix_shape": [
+        11646,
+        355
+      ],
+      "training_time_seconds": 0.1929028034210205,
+      "domains": [
+        "shot_influence"
+      ],
+      "results": {
+        "shot_influence": {
+          "domain": "shot_influence",
+          "best_alpha": 100.0,
+          "r2_score": -0.0324045480413524,
+          "mse": 17.429879964232278,
+          "n_train": 9316,
+          "n_test": 2330,
+          "coefficient_mean": 0.010230211180797874,
+          "coefficient_std": 0.06809040885301669,
+          "process_type": "padim_data_processing",
+          "version": "5.0",
+          "stability": {
+            "mean_coefficient": 0.010230211180797874,
+            "std_coefficient": 0.06809040885301669,
+            "min_coefficient": -0.1900528743060703,
+            "max_coefficient": 0.22701457517534046,
+            "percentile_25": -0.03520612515983624,
+            "percentile_75": 0.05721371505806991,
+            "n_players_above_zero": 191,
+            "n_players_below_zero": 164,
+            "coefficient_range": 0.4170674494814107
+          }
+        }
+      }
+    }
+  },
+  "analysis": {
+    "scaling_trend": [
+      {
+        "subset_size": 25,
+        "players": 25,
+        "training_time": 0.016746044158935547,
+        "r2_score": -0.00023348813248502687,
+        "coefficient_range": 0.18410752986771356,
+        "players_above_zero": 12,
+        "players_below_zero": 13
+      },
+      {
+        "subset_size": 50,
+        "players": 50,
+        "training_time": 0.024563074111938477,
+        "r2_score": -0.0031932759889163886,
+        "coefficient_range": 0.3061441712186117,
+        "players_above_zero": 28,
+        "players_below_zero": 22
+      },
+      {
+        "subset_size": 100,
+        "players": 100,
+        "training_time": 0.04471182823181152,
+        "r2_score": -0.0044195259758963434,
+        "coefficient_range": 0.3377640132407417,
+        "players_above_zero": 50,
+        "players_below_zero": 50
+      },
+      {
+        "subset_size": 200,
+        "players": 405,
+        "training_time": 0.2490248680114746,
+        "r2_score": -0.041387060850954116,
+        "coefficient_range": 0.4194633095741734,
+        "players_above_zero": 216,
+        "players_below_zero": 189
+      },
+      {
+        "subset_size": 355,
+        "players": 355,
+        "training_time": 0.1929028034210205,
+        "r2_score": -0.0324045480413524,
+        "coefficient_range": 0.4170674494814107,
+        "players_above_zero": 191,
+        "players_below_zero": 164
+      }
+    ],
+    "performance_trend": [],
+    "efficiency_trend": [
+      {
+        "subset_size": 50,
+        "efficiency": -0.37863330116758126,
+        "time_increase": 0.00781702995300293,
+        "r2_improvement": -0.0029597878564313618
+      },
+      {
+        "subset_size": 100,
+        "efficiency": -0.060859841739320464,
+        "time_increase": 0.020148754119873047,
+        "r2_improvement": -0.0012262499869799548
+      },
+      {
+        "subset_size": 200,
+        "efficiency": -0.1809357587500269,
+        "time_increase": 0.20431303977966309,
+        "r2_improvement": -0.03696753487505777
+      },
+      {
+        "subset_size": 355,
+        "efficiency": 0,
+        "time_increase": -0.0561220645904541,
+        "r2_improvement": 0.008982512809601717
+      }
+    ],
+    "stability_trend": [],
+    "recommended_subset_size": 355,
+    "scaling_efficiency": -0.0012103926347582763
+  },
+  "total_stints": 12046,
+  "valid_stints": 11646,
+  "total_players_all": 489
+}
