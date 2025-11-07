@@ -16,6 +16,9 @@ A Pragmatic Startup CTO obsessed with speed, shipping a V1 MVP as fast as possib
 A Security Engineer obsessed with risk mitigation and real-time safety.
 For each plan, list the pros, cons, and key trade-offs. Then, recommend which plan (or a hybrid of them) is the best fit and why.
 
+##OverEngineering
+From first principles, do you think we may be overengineering and overthinking what is actually much simpler? Why or why not?
+
 ## @PreMortem
 This is a great plan. Now, I want you to perform a pre-mortem. Fast forward six weeks. The implementation of this plan has been a complete disaster. What was the single, non-obvious, and incorrect assumption we made in this plan that caused the failure? Based on that insight, what is the one change we must make to the plan *right now* to prevent that failure?
 
