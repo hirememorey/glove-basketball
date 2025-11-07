@@ -49,7 +49,7 @@ PADIM will create multi-faceted defensive player fingerprints by analyzing a pla
 - **[Technical Specification](technical_specification.md)**: Detailed technical requirements and implementation status
 - **[Model Specification](model_spec.md)**: RAPM methodology and validation framework
 
-**🚀 NEXT PHASE: RAPM MODEL IMPLEMENTATION**
+**🚀 CURRENT PHASE: RAPM MVP IMPLEMENTATION (IN PROGRESS)**
 
 **👥 DEVELOPER HANDOVER NOTES:**
 - **Dataset Expansion Complete**: Successfully processed 491/500 games (98.2% success rate) with 12,141 stints created
@@ -58,12 +58,18 @@ PADIM will create multi-faceted defensive player fingerprints by analyzing a pla
 - **Statistical Power Achieved**: Dataset sufficient for stable RAPM coefficients and year-over-year validation
 - **RAPM Foundation Ready**: All defensive domains (Shot Influence, Shot Suppression, Possession Creation) can now be modeled
 
-**📈 IMMEDIATE NEXT STEPS FOR NEW DEVELOPER:**
-1. **RAPM Model Development**: Implement Ridge regression models for defensive impact quantification
-2. **Feature Engineering**: Create stint-level features (opponent eFG%, rim attempt rates, possession controls)
-3. **Model Training**: Train RAPM models on 491-game dataset with proper regularization
-4. **Validation Framework**: Implement year-over-year stability testing and cross-validation
-5. **Defensive Fingerprint Creation**: Build multi-dimensional player profiles from RAPM coefficients
+**📈 RAPM MVP PROGRESS (75% Complete):**
+- ✅ **RAPM Class Architecture**: Complete modular RAPM implementation (`src/padim/rapm_model.py`)
+- ✅ **Data Pipeline**: Successfully extracting 12,046 stints with defensive metrics
+- ✅ **Design Matrix**: Working sparse matrix construction (12,046 × 489 players)
+- ⚠️ **Model Training**: HANGING ISSUE - Computational complexity in Ridge regression needs optimization
+- ❌ **Validation & Output**: Not yet implemented
+
+**🛠️ CRITICAL ISSUE FOR NEW DEVELOPER:**
+- **Problem**: RAPM pipeline hangs during Ridge regression training on full dataset
+- **Root Cause**: Computational complexity with 12K × 489 sparse matrix operations
+- **Impact**: MVP blocked at final training step
+- **Solution Needed**: Optimize matrix operations and/or implement batch processing
 
 **🔍 RAPM VALIDATION CHECKLIST:**
 1. **✅ Processing Reliability**: Resumable processor validated at scale (491/500 games processed)
@@ -139,12 +145,14 @@ padim/
 │   ├── data_collector.py      # Multi-player data collection ✅
 │   ├── stint_aggregator.py    # Stint aggregation from GameRotation ✅
 │   ├── diagnostics.py         # Comprehensive game diagnostics 🆕
-│   └── resumable_processor.py # Enterprise-grade resumable processing 🆕
+│   ├── resumable_processor.py # Enterprise-grade resumable processing 🆕
+│   └── rapm_model.py          # RAPM implementation (MVP in progress) 🆕
 ├── data/              # SQLite database + processing state files ✅
 ├── models/            # Empty - RAPM models not yet trained
 ├── logs/              # Structured application logs ✅
 ├── config.py          # Main configuration ✅
 ├── test_components.py # Infrastructure testing ✅
+├── test_rapm.py       # RAPM implementation testing 🆕
 ├── batch_game_processor.py    # Legacy batch processor
 ├── resumable_batch_process.py # Production-ready resumable processor 🆕
 ├── data_exploration.py        # PBP and rotation data analysis
@@ -189,10 +197,27 @@ python -m src.padim.diagnostics 0022200001
 # python resumable_batch_process.py 2023-24 --max-games 500
 ```
 
+### RAPM Development & Testing
+```bash
+# Run RAPM implementation tests (⚠️ Currently hangs during training)
+python test_rapm.py
+
+# Check RAPM data extraction (working)
+python -c "from src.padim.rapm_model import RAPMModel; r = RAPMModel(); df = r.extract_stint_data(); print(f'Shape: {df.shape}')"
+
+# Analyze player observation distribution
+sqlite3 data/padim.db "SELECT COUNT(*) as total_players, SUM(CASE WHEN stint_count >= 100 THEN 1 ELSE 0 END) as players_100_plus FROM (SELECT player_id, COUNT(*) as stint_count FROM (SELECT DISTINCT game_id, stint_start, home_player_1 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, home_player_2 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, home_player_3 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, home_player_4 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, home_player_5 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, away_player_1 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, away_player_2 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, away_player_3 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, away_player_4 as player_id FROM stints UNION ALL SELECT DISTINCT game_id, stint_start, away_player_5 as player_id FROM stints) GROUP BY player_id);"
+
+# Examine RAPM model structure
+python -c "from src.padim.rapm_model import RAPMModel; help(RAPMModel.run_full_pipeline)"
+```
+
 ### Key Files to Understand
 - `resumable_batch_process.py`: **START HERE** - Production-ready data processing
 - `src/padim/resumable_processor.py`: Core resumable processing logic
 - `src/padim/diagnostics.py`: Game-level testing and validation tools
+- `src/padim/rapm_model.py`: **CURRENT WORK** - RAPM implementation (75% complete, blocked by computational issues)
+- `test_rapm.py`: RAPM testing and validation script
 - `free_throw_possession_guide.md`: Complete free throw attribution logic
 - `technical_specification.md`: Detailed technical requirements
 - `model_spec.md`: RAPM methodology and validation framework
@@ -202,6 +227,13 @@ python -m src.padim.diagnostics 0022200001
 - **During processing**: Monitor status and check logs for issues
 - **After processing**: Validate data quality and statistical power
 - **On failures**: Use diagnostic tools to identify root causes
+
+### RAPM Development Notes
+- **Current Status**: 75% complete MVP with solid data pipeline and architecture
+- **Blocking Issue**: Ridge regression training hangs on full 12K × 489 dataset
+- **Priority**: Fix computational complexity before proceeding with validation
+- **Approach**: Start with subset of high-observation players for initial testing
+- **Goal**: Working RAPM coefficients for defensive player evaluation
 
 ### System Reliability Features
 - **Zero progress loss**: Automatic state saving with interruption recovery
