@@ -36,24 +36,27 @@ class RAPMModel:
     and opponents on the court.
     """
 
-    def __init__(self, alpha: float = 1.0, cv_folds: int = 5):
+    def __init__(self, alpha: float = 1.0, cv_folds: int = 5, include_controls: bool = True):
         """
         Initialize RAPM model.
 
         Args:
             alpha: Regularization parameter for Ridge regression (default: 1.0)
             cv_folds: Number of cross-validation folds (default: 5)
+            include_controls: Whether to include practical controls (opponent quality, venue, pace)
         """
         self.alpha = alpha
         self.cv_folds = cv_folds
+        self.include_controls = include_controls
         self.db = DatabaseConnection()
         self.model = None
         self.player_ids = None
         self.player_names = None
         self.coefficients = {}
         self.cv_scores = {}
+        self.control_coefficients = {}
 
-        logger.info(f"Initialized RAPM model with alpha={alpha}, cv_folds={cv_folds}")
+        logger.info(f"Initialized RAPM model with alpha={alpha}, cv_folds={cv_folds}, controls={include_controls}")
 
     def extract_stint_data(self) -> pd.DataFrame:
         """
@@ -64,9 +67,11 @@ class RAPMModel:
         """
         logger.info("Extracting stint data from database...")
 
-        query = """
+        base_query = """
         SELECT
             s.*,
+            g.home_score,
+            g.away_score,
             -- Home team defensive outcomes
             CASE WHEN s.home_opp_fga > 0
                  THEN (s.home_opp_fgm + 0.5 * s.home_opp_fg3m) / s.home_opp_fga
@@ -82,20 +87,135 @@ class RAPMModel:
                  THEN s.away_opp_rim_attempts / s.away_opp_fga
                  ELSE NULL END as away_rim_rate
         FROM stints s
+        JOIN games g ON s.game_id = g.game_id
         WHERE s.duration >= 120  -- At least 2 minutes
         ORDER BY s.game_id, s.stint_start
         """
 
-        df = pd.read_sql_query(query, self.db._connection)
+        df = pd.read_sql_query(base_query, self.db._connection)
 
         # Remove rows with missing defensive data
         df = df.dropna(subset=['home_def_eFG', 'away_def_eFG'])
+
+        if self.include_controls:
+            logger.info("Adding practical controls to stint data...")
+            df = self._add_practical_controls(df)
 
         logger.info(f"Extracted {len(df):,} stints with complete defensive data")
         logger.info(f"Games covered: {df['game_id'].nunique()}")
         logger.info(f"Date range: {df['created_at'].min()} to {df['created_at'].max()}")
 
         return df
+
+    def _add_practical_controls(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add practical control variables to stint data.
+
+        Includes:
+        - Opponent quality (season defensive rating)
+        - Venue effects (home court advantage)
+        - Pace normalization (possessions per minute)
+        - Game situation (score differential)
+
+        Args:
+            df: DataFrame with stint data
+
+        Returns:
+            DataFrame with control variables added
+        """
+        logger.info("Adding practical controls...")
+
+        # Game data already included in base query, proceed with opponent quality calculation
+
+        # 1. Opponent Quality Control
+        # Calculate season defensive rating for each team (points allowed per 100 possessions)
+        opp_quality_df = self._calculate_opponent_quality()
+        df = df.merge(opp_quality_df, left_on=['home_team_id', 'game_id'],
+                     right_on=['team_id', 'game_id'], how='left')
+        df = df.rename(columns={'defensive_rating': 'home_opp_quality'}).drop('team_id', axis=1)
+
+        df = df.merge(opp_quality_df, left_on=['away_team_id', 'game_id'],
+                     right_on=['team_id', 'game_id'], how='left')
+        df = df.rename(columns={'defensive_rating': 'away_opp_quality'}).drop('team_id', axis=1)
+
+        # 2. Venue Effects (Home court advantage)
+        df['venue_home'] = 1  # All stints have home court advantage for home team
+        df['venue_away'] = -1  # Away teams play without home court advantage
+
+        # 3. Pace Normalization (possessions per minute)
+        # Calculate stint pace based on defensive possessions
+        df['home_possessions'] = df['home_opp_fga'] + 0.44 * df['home_opp_fga'] * 0.1  # Rough possession estimate
+        df['away_possessions'] = df['away_opp_fga'] + 0.44 * df['away_opp_fga'] * 0.1
+
+        df['home_pace'] = df['home_possessions'] / (df['duration'] / 60)  # possessions per minute
+        df['away_pace'] = df['away_possessions'] / (df['duration'] / 60)
+
+        # Normalize by league average pace (rough estimate ~100 possessions per 48 minutes)
+        league_avg_pace = 100 / 48  # possessions per minute
+        df['home_pace_norm'] = df['home_pace'] / league_avg_pace
+        df['away_pace_norm'] = df['away_pace'] / league_avg_pace
+
+        # 4. Game Situation (score differential)
+        df['home_score_diff'] = df['home_score'] - df['away_score']
+        df['away_score_diff'] = df['away_score'] - df['home_score']
+
+        # Fill missing values with reasonable defaults
+        df['home_opp_quality'] = df['home_opp_quality'].fillna(df['home_opp_quality'].mean())
+        df['away_opp_quality'] = df['away_opp_quality'].fillna(df['away_opp_quality'].mean())
+
+        logger.info("Added practical controls: opponent quality, venue effects, pace normalization, game situation")
+
+        return df
+
+    def _calculate_opponent_quality(self) -> pd.DataFrame:
+        """
+        Calculate opponent quality metric (defensive rating) for each team in each game.
+
+        Uses season-to-date defensive performance as opponent quality proxy.
+
+        Returns:
+            DataFrame with team defensive ratings by game
+        """
+        # Get all games with scores to calculate season defensive ratings
+        games_query = """
+        SELECT game_id, home_team_id, away_team_id, home_score, away_score,
+               season_id, game_date
+        FROM games
+        ORDER BY game_date
+        """
+        games_df = pd.read_sql_query(games_query, self.db._connection)
+
+        # Calculate defensive rating for each team (points allowed per game, normalized)
+        defensive_ratings = []
+
+        for _, game in games_df.iterrows():
+            season = game['season_id']
+
+            # Home team defensive rating (points allowed by home team)
+            home_defensive = game['away_score']
+
+            # Away team defensive rating (points allowed by away team)
+            away_defensive = game['home_score']
+
+            defensive_ratings.extend([
+                {'game_id': game['game_id'], 'team_id': game['home_team_id'],
+                 'defensive_rating': home_defensive},
+                {'game_id': game['game_id'], 'team_id': game['away_team_id'],
+                 'defensive_rating': away_defensive}
+            ])
+
+        ratings_df = pd.DataFrame(defensive_ratings)
+
+        # Calculate season averages up to each game (rolling defensive rating)
+        ratings_df = ratings_df.sort_values(['team_id', 'game_id'])
+        ratings_df['season_avg_defensive'] = ratings_df.groupby('team_id')['defensive_rating'].expanding().mean().reset_index(0, drop=True)
+
+        # Use season average as opponent quality metric (higher = worse defense = tougher opponent)
+        result_df = ratings_df[['game_id', 'team_id', 'season_avg_defensive']].rename(
+            columns={'season_avg_defensive': 'defensive_rating'}
+        )
+
+        return result_df
 
     def build_design_matrix(self, stint_data: pd.DataFrame) -> Tuple[sparse.csr_matrix, np.ndarray]:
         """
@@ -124,12 +244,20 @@ class RAPMModel:
 
         logger.info(f"Found {len(self.player_ids):,} unique players")
 
-        # Initialize sparse matrix
+        # Calculate total columns: players + control variables
         n_stints = len(stint_data)
         n_players = len(self.player_ids)
-        design_matrix = sparse.lil_matrix((n_stints, n_players))
+        n_controls = 0
 
-        # Build design matrix: +1 for home team players, -1 for away team players
+        if self.include_controls:
+            # Control variables: opp_quality, venue, pace_norm, score_diff (4 per team)
+            n_controls = 8  # home_opp_quality, away_opp_quality, venue_home, venue_away,
+                            # home_pace_norm, away_pace_norm, home_score_diff, away_score_diff
+
+        total_cols = n_players + n_controls
+        design_matrix = sparse.lil_matrix((n_stints, total_cols))
+
+        # Build player portion: +1 for home team players, -1 for away team players
         for stint_idx in range(n_stints):
             stint = stint_data.iloc[stint_idx]
 
@@ -146,6 +274,29 @@ class RAPMModel:
                 if not pd.isna(player_id) and int(player_id) in player_id_to_idx:
                     player_idx = player_id_to_idx[int(player_id)]
                     design_matrix[stint_idx, player_idx] = -1
+
+        # Add control variables if enabled
+        if self.include_controls:
+            control_start_idx = n_players
+
+            for stint_idx in range(n_stints):
+                stint = stint_data.iloc[stint_idx]
+
+                # Opponent quality controls
+                design_matrix[stint_idx, control_start_idx] = stint.get('home_opp_quality', 0)
+                design_matrix[stint_idx, control_start_idx + 1] = stint.get('away_opp_quality', 0)
+
+                # Venue effects
+                design_matrix[stint_idx, control_start_idx + 2] = stint.get('venue_home', 1)
+                design_matrix[stint_idx, control_start_idx + 3] = stint.get('venue_away', -1)
+
+                # Pace normalization
+                design_matrix[stint_idx, control_start_idx + 4] = stint.get('home_pace_norm', 1)
+                design_matrix[stint_idx, control_start_idx + 5] = stint.get('away_pace_norm', 1)
+
+                # Game situation (score differential)
+                design_matrix[stint_idx, control_start_idx + 6] = stint.get('home_score_diff', 0)
+                design_matrix[stint_idx, control_start_idx + 7] = stint.get('away_score_diff', 0)
 
         # Convert to CSR format for efficient computation
         design_matrix = design_matrix.tocsr()
@@ -218,23 +369,314 @@ class RAPMModel:
         self.cv_scores[domain] = cv_scores
 
         # Extract coefficients
-        coefficients = model.coef_
-        self.coefficients[domain] = coefficients
+        all_coefficients = model.coef_
+
+        # Separate player coefficients from control coefficients
+        n_players = len(self.player_ids)
+        player_coefficients = all_coefficients[:n_players]
+        control_coefficients = all_coefficients[n_players:] if self.include_controls else np.array([])
+
+        self.coefficients[domain] = player_coefficients
+        if self.include_controls:
+            self.control_coefficients[domain] = control_coefficients
 
         results = {
             'domain': domain,
-            'coefficients': coefficients,
+            'coefficients': player_coefficients,
+            'control_coefficients': control_coefficients if self.include_controls else None,
             'cv_r2_mean': cv_scores.mean(),
             'cv_r2_std': cv_scores.std(),
             'cv_r2_scores': cv_scores,
             'intercept': model.intercept_,
-            'n_players': len(coefficients),
+            'n_players': len(player_coefficients),
             'alpha': self.alpha
         }
 
         logger.info(f"Training complete - CV R²: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
 
         return results
+
+    def compare_controlled_vs_uncontrolled(self) -> Dict[str, Any]:
+        """
+        Compare RAPM performance with and without practical controls.
+
+        Returns:
+            Dictionary with comparison results
+        """
+        logger.info("Comparing controlled vs uncontrolled RAPM models...")
+
+        # Run uncontrolled model
+        rapm_uncontrolled = RAPMModel(alpha=self.alpha, cv_folds=self.cv_folds, include_controls=False)
+        results_uncontrolled = rapm_uncontrolled.run_full_pipeline()
+
+        # Run controlled model (self)
+        results_controlled = self.run_full_pipeline()
+
+        comparison = {
+            'uncontrolled': results_uncontrolled,
+            'controlled': results_controlled,
+            'improvement': {}
+        }
+
+        # Calculate improvements
+        for domain in ['shot_influence', 'shot_suppression']:
+            uncontrolled_r2 = results_uncontrolled['results'][domain]['cv_r2_mean']
+            controlled_r2 = results_controlled['results'][domain]['cv_r2_mean']
+
+            improvement = controlled_r2 - uncontrolled_r2
+            percent_improvement = (improvement / abs(uncontrolled_r2)) * 100 if uncontrolled_r2 != 0 else 0
+
+            comparison['improvement'][domain] = {
+                'r2_improvement': improvement,
+                'percent_improvement': percent_improvement,
+                'uncontrolled_r2': uncontrolled_r2,
+                'controlled_r2': controlled_r2
+            }
+
+        # Analyze control coefficients if available
+        if self.include_controls and hasattr(self, 'control_coefficients'):
+            comparison['control_analysis'] = self._analyze_control_coefficients()
+
+        rapm_uncontrolled.close()
+
+        logger.info("Model comparison complete")
+        return comparison
+
+    def _analyze_control_coefficients(self) -> Dict[str, Any]:
+        """
+        Analyze the coefficients of control variables.
+
+        Returns:
+            Dictionary with control coefficient analysis
+        """
+        control_names = [
+            'home_opp_quality', 'away_opp_quality', 'venue_home', 'venue_away',
+            'home_pace_norm', 'away_pace_norm', 'home_score_diff', 'away_score_diff'
+        ]
+
+        analysis = {}
+
+        for domain in self.control_coefficients.keys():
+            coeffs = self.control_coefficients[domain]
+            analysis[domain] = {}
+
+            for i, name in enumerate(control_names):
+                if i < len(coeffs):
+                    analysis[domain][name] = {
+                        'coefficient': coeffs[i],
+                        'magnitude': abs(coeffs[i]),
+                        'direction': 'positive' if coeffs[i] > 0 else 'negative'
+                    }
+
+        return analysis
+
+    def test_within_season_stability(self) -> Dict[str, Any]:
+        """
+        Test RAPM stability within the season by comparing first half vs second half.
+
+        Since we only have one season, this provides a proxy for stability testing.
+
+        Returns:
+            Dictionary with stability analysis results
+        """
+        logger.info("Testing within-season RAPM stability...")
+
+        # Split games into first and second half of season
+        games_query = """
+        SELECT game_id, game_date
+        FROM games
+        ORDER BY game_date
+        """
+        games_df = pd.read_sql_query(games_query, self.db._connection)
+
+        # Split into first and second half
+        mid_point = len(games_df) // 2
+        first_half_games = set(games_df.iloc[:mid_point]['game_id'])
+        second_half_games = set(games_df.iloc[mid_point:]['game_id'])
+
+        logger.info(f"First half: {len(first_half_games)} games, Second half: {len(second_half_games)} games")
+
+        stability_results = {}
+
+        for domain in ['shot_influence', 'shot_suppression']:
+            logger.info(f"Testing stability for {domain}...")
+
+            # Get coefficients for first half
+            first_half_coeffs = self._get_coefficients_for_games(first_half_games, domain)
+
+            # Get coefficients for second half
+            second_half_coeffs = self._get_coefficients_for_games(second_half_games, domain)
+
+            # Calculate correlation between halves
+            common_players = set(first_half_coeffs.keys()) & set(second_half_coeffs.keys())
+
+            if len(common_players) > 10:  # Need sufficient sample
+                first_vals = [first_half_coeffs[p] for p in common_players]
+                second_vals = [second_half_coeffs[p] for p in common_players]
+
+                correlation = np.corrcoef(first_vals, second_vals)[0, 1]
+                stability_results[domain] = {
+                    'correlation': correlation,
+                    'n_players': len(common_players),
+                    'first_half_mean': np.mean(first_vals),
+                    'second_half_mean': np.mean(second_vals),
+                    'first_half_std': np.std(first_vals),
+                    'second_half_std': np.std(second_vals)
+                }
+                logger.info(f"{domain}: correlation = {correlation:.3f} ({len(common_players)} players)")
+            else:
+                stability_results[domain] = {
+                    'correlation': None,
+                    'n_players': len(common_players),
+                    'error': 'Insufficient common players'
+                }
+                logger.warning(f"{domain}: insufficient players ({len(common_players)}) for stability test")
+
+        return stability_results
+
+    def _get_coefficients_for_games(self, game_ids: set, domain: str) -> Dict[int, float]:
+        """
+        Train RAPM model on subset of games and return player coefficients.
+
+        Args:
+            game_ids: Set of game IDs to include
+            domain: Domain to analyze ('shot_influence' or 'shot_suppression')
+
+        Returns:
+            Dictionary mapping player_id to coefficient
+        """
+        # Extract stint data for these games only
+        game_ids_str = ','.join(f"'{gid}'" for gid in game_ids)
+
+        query = f"""
+        SELECT
+            s.*,
+            g.home_score,
+            g.away_score,
+            CASE WHEN s.home_opp_fga > 0
+                 THEN (s.home_opp_fgm + 0.5 * s.home_opp_fg3m) / s.home_opp_fga
+                 ELSE NULL END as home_def_eFG,
+            CASE WHEN s.home_opp_fga > 0
+                 THEN s.home_opp_rim_attempts / s.home_opp_fga
+                 ELSE NULL END as home_rim_rate,
+            CASE WHEN s.away_opp_fga > 0
+                 THEN (s.away_opp_fgm + 0.5 * s.away_opp_fg3m) / s.away_opp_fga
+                 ELSE NULL END as away_def_eFG,
+            CASE WHEN s.away_opp_fga > 0
+                 THEN s.away_opp_rim_attempts / s.away_opp_fga
+                 ELSE NULL END as away_rim_rate
+        FROM stints s
+        JOIN games g ON s.game_id = g.game_id
+        WHERE s.game_id IN ({game_ids_str})
+        AND s.duration >= 120
+        ORDER BY s.game_id, s.stint_start
+        """
+
+        df = pd.read_sql_query(query, self.db._connection)
+        df = df.dropna(subset=['home_def_eFG', 'away_def_eFG'])
+
+        if self.include_controls:
+            df = self._add_practical_controls(df)
+
+        if len(df) < 100:  # Need sufficient data
+            return {}
+
+        # Build design matrix and train
+        design_matrix, _ = self.build_design_matrix(df)
+
+        # Determine target variable
+        if domain == 'shot_influence':
+            target = df['home_def_eFG'] - df['away_def_eFG']
+        else:  # shot_suppression
+            target = df['home_rim_rate'] - df['away_rim_rate']
+
+        # Train model
+        model = Ridge(alpha=self.alpha)
+        model.fit(design_matrix, target)
+
+        # Extract player coefficients
+        all_coefficients = model.coef_
+        n_players = len(self.player_ids)
+        player_coefficients = all_coefficients[:n_players]
+
+        # Return as dict
+        return dict(zip(self.player_ids, player_coefficients))
+
+    def run_sensitivity_analysis(self) -> Dict[str, Any]:
+        """
+        Test sensitivity of RAPM results to different control specifications.
+
+        Returns:
+            Dictionary with sensitivity analysis results
+        """
+        logger.info("Running RAPM sensitivity analysis...")
+
+        sensitivity_configs = [
+            {'name': 'no_controls', 'include_controls': False},
+            {'name': 'full_controls', 'include_controls': True},
+            {'name': 'alpha_0.5', 'include_controls': True, 'alpha': 0.5},
+            {'name': 'alpha_2.0', 'include_controls': True, 'alpha': 2.0},
+            {'name': 'cv_5fold', 'include_controls': True, 'cv_folds': 5},
+        ]
+
+        results = {}
+
+        for config in sensitivity_configs:
+            logger.info(f"Testing configuration: {config['name']}")
+
+            # Create model with this configuration
+            alpha = config.get('alpha', self.alpha)
+            cv_folds = config.get('cv_folds', self.cv_folds)
+            include_controls = config.get('include_controls', True)
+
+            model = RAPMModel(alpha=alpha, cv_folds=cv_folds, include_controls=include_controls)
+            pipeline_results = model.run_full_pipeline()
+
+            results[config['name']] = {
+                'config': config,
+                'results': pipeline_results
+            }
+
+            model.close()
+
+        # Analyze sensitivity
+        sensitivity_summary = self._analyze_sensitivity(results)
+
+        return {
+            'configurations': results,
+            'sensitivity_summary': sensitivity_summary
+        }
+
+    def _analyze_sensitivity(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Analyze sensitivity of results across different configurations.
+
+        Args:
+            results: Results from different model configurations
+
+        Returns:
+            Summary of sensitivity analysis
+        """
+        summary = {}
+
+        # Compare R² values across configurations
+        for domain in ['shot_influence', 'shot_suppression']:
+            r2_values = {}
+            for config_name, config_results in results.items():
+                r2 = config_results['results']['results'][domain]['cv_r2_mean']
+                r2_values[config_name] = r2
+
+            # Calculate ranges and variability
+            r2_list = list(r2_values.values())
+            summary[domain] = {
+                'r2_range': max(r2_list) - min(r2_list),
+                'r2_std': np.std(r2_list),
+                'r2_values': r2_values,
+                'best_config': max(r2_values, key=r2_values.get),
+                'worst_config': min(r2_values, key=r2_values.get)
+            }
+
+        return summary
 
     def run_subset_pipeline(self, min_stints: int = 100) -> Dict[str, Any]:
         """

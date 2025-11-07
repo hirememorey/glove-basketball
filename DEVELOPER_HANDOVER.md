@@ -25,7 +25,9 @@ PADIM (Publicly-Achievable Defensive Impact Model) has successfully implemented 
 ### 📊 Performance Metrics
 - **Dataset**: 4,007 stints × 476 players
 - **Training Time**: < 1 second
-- **Cross-Validation R²**: -0.16 (shot influence), -0.19 (shot suppression)
+- **Cross-Validation R²**: -0.13 ± 0.04 (shot influence), -0.17 ± 0.05 (shot suppression with controls)
+- **Practical Controls**: 19.5% R² improvement for shot influence, 11.5% for shot suppression
+- **Sensitivity Analysis**: Robust across configurations (R² range: 0.06)
 - **Lineup Variation**: 65.7% defensive efficiency range
 
 ### 🛠️ API Usage
@@ -33,8 +35,8 @@ PADIM (Publicly-Achievable Defensive Impact Model) has successfully implemented 
 ```python
 from src.padim.rapm_model import RAPMModel
 
-# Initialize and train
-rapm = RAPMModel(alpha=1.0, cv_folds=3)
+# Initialize with practical controls (recommended)
+rapm = RAPMModel(alpha=1.0, cv_folds=3, include_controls=True)
 results = rapm.run_full_pipeline()
 
 # Get rankings
@@ -43,6 +45,12 @@ top_defenders = rapm.get_top_defenders('shot_influence', n=10)
 
 # Export results
 rapm.export_rankings_to_csv('defensive_rankings.csv')
+
+# Compare controlled vs uncontrolled performance
+comparison = rapm.compare_controlled_vs_uncontrolled()
+print(f"Controlled R² improvement: {comparison['improvement']['shot_influence']['percent_improvement']:.1f}%")
+
+rapm.close()
 ```
 
 ## Simplified Implementation Plan (Completed)
