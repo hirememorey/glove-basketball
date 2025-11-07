@@ -1,0 +1,33 @@
+{
+  "training_info": {
+    "games_used": 200,
+    "stints_used": 1593,
+    "players_in_rapm": 437,
+    "rapm_train_r2": 0.07992764067188418,
+    "rapm_test_r2": -0.024300808916884797
+  },
+  "players_compared": 349,
+  "predictive_comparison": {
+    "sample_size": 405,
+    "rapm": {
+      "correlation": 0.12606629314026638,
+      "r_squared": -33.76378899200063,
+      "mae": 0.5589619181350423
+    },
+    "traditional_contested": {
+      "correlation": 9.860374331774142e-05,
+      "r_squared": -4330.021736568496,
+      "mae": 6.2759762469027525
+    },
+    "traditional_deflections": {
+      "correlation": 0.029959239781513176,
+      "r_squared": -245.84096581081687,
+      "mae": 1.4726354518149223
+    }
+  },
+  "conclusions": [
+    "\u26a0\ufe0f  LIMITED RAPM-TRADITIONAL CORRELATION: RAPM captures different defensive aspects than traditional metrics",
+    "\u2705 SUPERIOR PREDICTIVE POWER: RAPM outperforms traditional contested shots metrics",
+    "\ud83c\udfaf DISTINCT APPROACH: RAPM captures fundamentally different defensive information"
+  ]
+}

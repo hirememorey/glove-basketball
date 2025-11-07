@@ -1,0 +1,29 @@
+{
+  "training_summary": {
+    "games_used": 50,
+    "stints_used": 388,
+    "players_in_model": 361,
+    "alpha_used": 100.0
+  },
+  "model_performance": {
+    "train_r2": 0.11205797165977416,
+    "test_r2": -0.012733919801893645,
+    "train_mse": 0.06161593739895221,
+    "test_mse": 0.061212126211588634
+  },
+  "prediction_summary": {
+    "lineups_predicted": 267,
+    "correlation": 0.19273026271238264,
+    "predictive_r2": -31.169261093114656,
+    "mae": 0.5625947444511264
+  },
+  "conclusions": [
+    "\u274c WEAK CORRELATION: RAPM predictions poorly match actual performance",
+    "\u274c NO STATISTICAL SIGNIFICANCE: RAPM fails to distinguish lineup performance statistically",
+    "\u274c NO PREDICTIVE POWER: RAPM predictions worse than random",
+    "\u274c POOR ACCURACY: RAPM predictions have large errors"
+  ],
+  "correlation": 0.19273026271238264,
+  "predictive_r2": -31.169261093114656,
+  "mae": 0.5625947444511264
+}

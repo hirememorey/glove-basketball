@@ -1,0 +1,78 @@
+{
+  "home_court_advantage": {
+    "home_advantage_effect": -0.015705674372280876,
+    "home_mean_eFG": 0.5576658756477001,
+    "away_mean_eFG": 0.573371550019981,
+    "t_statistic": -2.677263429245912,
+    "p_value": 0.007437749185034814,
+    "significant": "True",
+    "effect_size": 0.05984382729430106,
+    "interpretation": "SMALL HOME ADVANTAGE: Some venue confounding possible"
+  },
+  "pace_differences": {
+    "pace_variance_analysis": {
+      "home_lineups_analyzed": 42,
+      "away_lineups_analyzed": 49,
+      "home_pace_std_between_lineups": 0.12508395778636366,
+      "away_pace_std_between_lineups": 0.13005954979341647,
+      "overall_home_pace": 1.869255892804418,
+      "overall_away_pace": 1.8797682968347873
+    },
+    "pace_range_analysis": {
+      "home_pace_range": 0.4938543936258075,
+      "away_pace_range": 0.5759274324498935
+    },
+    "interpretation": "MODERATE PACE VARIANCE: Some pace differences exist"
+  },
+  "sample_size_bias": {
+    "sample_size_distribution": {
+      "home_lineups_total": 2086,
+      "away_lineups_total": 1963,
+      "home_lineups_min_count": "1",
+      "home_lineups_max_count": "34",
+      "home_lineups_median_count": 1.0,
+      "away_lineups_min_count": "1",
+      "away_lineups_max_count": "38",
+      "away_lineups_median_count": 1.0
+    },
+    "sample_size_bias_check": {
+      "correlation_sample_size_performance": -0.0021237430195312004,
+      "significant_bias": "False"
+    },
+    "interpretation": "NO SAMPLE SIZE BIAS: Performance uncorrelated with sample size"
+  },
+  "lineup_assignment_systematics": {
+    "lineup_concentration": {
+      "total_unique_lineups": 20,
+      "top_5_lineups_percentage": 34.177215189873415,
+      "gini_coefficient": 0.14905063291139237,
+      "most_frequent_lineup_count": "25"
+    },
+    "interpretation": "HIGH LINEUP CONCENTRATION: Lineup assignments may be systematic, not random"
+  },
+  "statistical_assumptions": {
+    "normality_tests": {
+      "home_eFG_normal": "False",
+      "home_eFG_shapiro_p": 6.403017355537413e-17,
+      "away_eFG_normal": "False",
+      "away_eFG_shapiro_p": 3.0179555541733005e-17
+    },
+    "variance_homogeneity": {
+      "equal_variances": "True",
+      "levene_p_value": 0.8938295615651141
+    },
+    "interpretation": "ASSUMPTIONS VIOLATED: home team eFG not normally distributed, away team eFG not normally distributed - consider non-parametric tests"
+  },
+  "overall_confounders_assessment": {
+    "risk_level": "MODERATE",
+    "conclusion": "SOME CONFOUNDING RISK: Results should be interpreted cautiously",
+    "high_risk_factors": 1,
+    "moderate_risk_factors": 3,
+    "recommendations": [
+      "Interpret results with appropriate caution",
+      "Consider sensitivity analyses with different controls",
+      "Validate key findings with alternative methods",
+      "Report confidence intervals and effect sizes"
+    ]
+  }
+}

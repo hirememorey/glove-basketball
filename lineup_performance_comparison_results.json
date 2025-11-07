@@ -1,0 +1,127 @@
+{
+  "summary": {
+    "total_lineups_analyzed": 91,
+    "avg_stints_per_lineup": 16.956043956043956,
+    "performance_range": [
+      0.3923,
+      0.7854
+    ],
+    "mean_defensive_efficiency": 0.5777340659340658
+  },
+  "quartile_comparison": {
+    "total_lineups": 91,
+    "quartile_size": 22,
+    "bottom_quartile": {
+      "def_eFG_range": [
+        0.3923,
+        0.5393
+      ],
+      "def_eFG_mean": 0.4903636363636364,
+      "def_eFG_std": 0.03774573511644091,
+      "avg_stints": 13.954545454545455,
+      "total_stints": 307
+    },
+    "top_quartile": {
+      "def_eFG_range": [
+        0.6279,
+        0.7854
+      ],
+      "def_eFG_mean": 0.6705636363636364,
+      "def_eFG_std": 0.04069906452013182,
+      "avg_stints": 17.181818181818183,
+      "total_stints": 378
+    },
+    "effect_size": 4.59106091936039,
+    "performance_gap": 0.18019999999999997,
+    "gap_interpretation": "VERY LARGE: Lineup differences represent major defensive impact"
+  },
+  "stability_analysis": {
+    "mean_within_lineup_cv": 0.403227764128468,
+    "median_within_lineup_cv": 0.3862823061630219,
+    "cv_distribution": {
+      "q25": 0.3475863393069848,
+      "q75": 0.4565668332830879,
+      "min": 0.19359777313848295,
+      "max": 0.6900331379046648
+    },
+    "consistency_interpretation": "LOW CONSISTENCY: Lineup performance is highly variable",
+    "most_consistent_lineups": [
+      {
+        "lineup_sig": "1628963,1628995,1630180,202692,202709",
+        "def_eFG_mean": 0.7185,
+        "def_eFG_std": 0.1391,
+        "def_eFG_cv": 0.19359777313848295,
+        "stint_count": 10
+      },
+      {
+        "lineup_sig": "1627759,1628401,1629684,201143,203935",
+        "def_eFG_mean": 0.7854,
+        "def_eFG_std": 0.1539,
+        "def_eFG_cv": 0.19595110771581362,
+        "stint_count": 10
+      },
+      {
+        "lineup_sig": "1628415,1629630,1630217,1630583,203500",
+        "def_eFG_mean": 0.6279,
+        "def_eFG_std": 0.1443,
+        "def_eFG_cv": 0.2298136645962733,
+        "stint_count": 10
+      },
+      {
+        "lineup_sig": "1626224,1627747,1629636,1630596,201567",
+        "def_eFG_mean": 0.6708,
+        "def_eFG_std": 0.1706,
+        "def_eFG_cv": 0.25432319618366134,
+        "stint_count": 10
+      },
+      {
+        "lineup_sig": "1626220,1627732,1629651,201142,202681",
+        "def_eFG_mean": 0.5926,
+        "def_eFG_std": 0.165,
+        "def_eFG_cv": 0.27843401957475533,
+        "stint_count": 12
+      }
+    ],
+    "least_consistent_lineups": [
+      {
+        "lineup_sig": "1627936,1630172,1630245,201942,202696",
+        "def_eFG_mean": 0.3923,
+        "def_eFG_std": 0.2707,
+        "def_eFG_cv": 0.6900331379046648,
+        "stint_count": 13
+      },
+      {
+        "lineup_sig": "1628392,1628973,1629628,1629629,203944",
+        "def_eFG_mean": 0.5123,
+        "def_eFG_std": 0.3121,
+        "def_eFG_cv": 0.6092133515518251,
+        "stint_count": 15
+      },
+      {
+        "lineup_sig": "1627734,1628989,1630558,1631099,203084",
+        "def_eFG_mean": 0.5394,
+        "def_eFG_std": 0.3139,
+        "def_eFG_cv": 0.581942899517983,
+        "stint_count": 17
+      },
+      {
+        "lineup_sig": "1627747,1628378,1628386,1629636,1630596",
+        "def_eFG_mean": 0.4892,
+        "def_eFG_std": 0.276,
+        "def_eFG_cv": 0.5641864268192969,
+        "stint_count": 15
+      },
+      {
+        "lineup_sig": "1628398,1628420,1630166,1630557,204001",
+        "def_eFG_mean": 0.5423,
+        "def_eFG_std": 0.3042,
+        "def_eFG_cv": 0.5609441268670478,
+        "stint_count": 15
+      }
+    ]
+  },
+  "validation_results": {
+    "statistical_significance": {
+      "anova_f_statistic": 141.0025280762273,
+      "anova_p_value": 2.662594415759171e-33,
+      "significant": 

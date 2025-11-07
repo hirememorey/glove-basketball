@@ -223,31 +223,34 @@ All code and models built for this platform must adhere to the following first p
     - Real-time monitoring and error categorization
     - Enterprise-grade reliability confirmed
 
-### RAPM Implementation Phase (IN PROGRESS - MVP DEVELOPMENT)
+### RAPM Implementation Phase (BLOCKED - METHODOLOGICAL ISSUES)
 - **Objective:** Build Ridge regression models for defensive impact quantification
-- **Status:** **75% COMPLETE** - Core architecture implemented, blocked by computational complexity
+- **Status:** **85% COMPLETE** - Core architecture implemented, blocked by methodological confounders
 - **Prerequisites:** ✅ MET - 12,141 stints with complete defensive outcome data
 
-**🎯 RAPM MVP Progress (75% Complete):**
+**🎯 RAPM MVP Progress (85% Complete):**
 
 **✅ COMPLETED COMPONENTS:**
 - **RAPM Class Architecture**: Complete modular implementation (`src/padim/rapm_model.py`)
 - **Data Extraction Pipeline**: Successfully processing 12,046 stints from 491 games
 - **Design Matrix Construction**: Working sparse matrix (12,046 × 489 players) with +1/-1 encoding
 - **Statistical Validation**: Confirmed excellent data quality (355 players with 100+ stints)
+- **Subset Training**: Validated training on player subsets (50-355 players)
+- **Scaling Validation**: Linear performance scaling confirmed
+- **Initial Validation Attempts**: Demonstrated lineup differences exist
 
-**⚠️ BLOCKING ISSUE:**
-- **Model Training Hangs**: Ridge regression training fails on full dataset due to computational complexity
-- **Root Cause**: 12K × 489 matrix operations exceed practical computational limits
-- **Impact**: MVP completion blocked at final training step
+**🚨 CRITICAL BLOCKING ISSUES (METHODOLOGICAL CONFOUNDERS):**
+- **Systematic Lineup Assignment Bias**: Lineups not randomly assigned - coaches strategically match to opponent quality
+- **Statistical Assumption Violations**: Defensive efficiency data not normally distributed, invalidating parametric tests
+- **Pace Differences**: Lineups face different game tempos affecting defensive opportunities
+- **Venue Effects**: Home court advantage may confound defensive performance comparisons
 
-**❌ REMAINING COMPONENTS:**
-- **Optimized Training**: Implement batch processing or matrix optimization
-- **Model Validation**: Cross-validation and coefficient stability analysis
-- **Player Outputs**: Defensive fingerprint generation
-- **Performance Optimization**: Scale down architecture for MVP success
+**❌ VALIDATION STATUS: INCONCLUSIVE**
+- Lineup differences exist but may reflect selection bias rather than defensive skill
+- Cannot confidently distinguish real defensive impact from systematic confounding
+- All statistical tests may be invalid due to methodological issues
 
-**🚀 CURRENT PHASE: PROGRESSIVE SCALING IMPLEMENTATION**
+**🔄 CURRENT PHASE: ADDRESS METHODOLOGICAL CONFOUNDERS**
 
 **✅ Subset Training Validated:**
 - **Top 50 Players**: 11,646 × 50 matrix → ~0.7s training time (R² ≈ -0.003)
@@ -255,12 +258,21 @@ All code and models built for this platform must adhere to the following first p
 - **Linear Scaling Confirmed**: Training time increases linearly with player count
 - **Computational Bottleneck Resolved**: Full dataset (11,646 × 489) estimated at 10-15 seconds
 
-**🎯 NEXT STEPS FOR RAPM MVP COMPLETION:**
-1. **Progressive Scaling**: Implement systematic scaling from 50 → 100 → 200 → 355 → 489 players
-2. **Model Optimization**: Tune hyperparameters and improve feature engineering for better R²
-3. **Multi-Domain Expansion**: Add shot suppression and possession creation domains
-4. **Cross-Season Validation**: Test year-over-year stability on additional seasons
-5. **Defensive Fingerprinting**: Build coefficient analysis and player ranking system
+**🎯 NEXT STEPS FOR RAPM MVP COMPLETION (AFTER ADDRESSING CONFOUNDERS):**
+1. **Implement Confounder Controls**: Address lineup assignment bias, statistical assumptions, pace differences
+2. **Re-validate Defensive Variance**: Confirm lineup differences persist after controlling for confounders
+3. **Progressive Scaling**: Implement systematic scaling from subsets to full dataset
+4. **Model Optimization**: Tune hyperparameters and improve feature engineering for better R²
+5. **Multi-Domain Expansion**: Add shot suppression and possession creation domains
+6. **Cross-Season Validation**: Test year-over-year stability on additional seasons
+7. **Defensive Fingerprinting**: Build coefficient analysis and player ranking system
+
+**🔧 IMMEDIATE ACTION ITEMS FOR NEXT DEVELOPER:**
+1. **Opponent Quality Controls**: Implement regression adjustment for opponent offensive rating and strength of schedule
+2. **Non-Parametric Statistics**: Replace t-tests/ANOVA with Mann-Whitney/Kruskal-Wallis tests
+3. **Propensity Score Matching**: Match lineups on equivalent game situations and opponent quality
+4. **Pace Normalization**: Control for game tempo differences between lineups
+5. **Cross-Validation**: Test findings on independent datasets to confirm robustness
 
 **RAPM Module 1: Shot Influence (SUBSET TRAINING COMPLETE)**
 - **Status:** Subset training validated, progressive scaling in progress
