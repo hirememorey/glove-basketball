@@ -3,9 +3,11 @@
 import logging
 import pandas as pd
 from typing import List, Dict, Tuple, Optional, Set
+import nba_api.stats.static as nba_static
 from nba_api.stats.endpoints import GameRotation, PlayByPlayV3, BoxScoreHustleV2, BoxScoreSummaryV2
 from .db.database import DatabaseConnection
 from .config.logging_config import get_logger, log_performance_metric, log_api_call
+from .config.settings import API_TIMEOUT
 
 logger = get_logger(__name__)
 
@@ -143,7 +145,7 @@ class StintAggregator:
         api_start = time.time()
 
         try:
-            endpoint = GameRotation(game_id=game_id)
+            endpoint = GameRotation(game_id=game_id, timeout=API_TIMEOUT)
             dfs = endpoint.get_data_frames()
             api_duration = time.time() - api_start
 

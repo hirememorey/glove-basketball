@@ -14,7 +14,7 @@ MIN_MINUTES_THRESHOLD = 1000
 # HTTP Request Configuration
 MAX_WORKERS = 2
 MAX_RETRIES = 12
-API_TIMEOUT = 120
+API_TIMEOUT = 300  # Increased from 120 to 300 seconds for NBA API timeouts
 
 # Delay/Backoff Configuration
 MIN_SLEEP = 3.0
